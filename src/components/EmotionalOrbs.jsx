@@ -11,8 +11,23 @@ const EmotionalFractals = () => {
   const cameraRef = useRef(null);
   const fractalRef = useRef(null);
   const particlesRef = useRef(null);
-  const particleCountRef = useRef(0); // aktuell verwendete Partikelanzahl
+  const particleCountRef = useRef(0);
   const mouseRef = useRef({ x: 0, y: 0 });
+
+  // ====== EINSTELLUNGEN: Partikel-Größe & -Transparenz ======
+  const PARTICLE_SIZE_BASE = 0.022;
+  const PARTICLE_SIZE_VAR  = 0.020;
+  const PARTICLE_OPACITY_BASE = 0.52;
+  const PARTICLE_OPACITY_VAR  = 0.22;
+
+  // ====== NEU: Zwei Partikelfarben pro Emotion ======
+  // (hier frei anpassen; Hex, rgb oder THREE.Color möglich)
+  const particleColors = {
+    calm:   { a: new THREE.Color('#9fdcff'), b: new THREE.Color('#c4ffe7') },
+    tension:{ a: new THREE.Color('#ff6868'), b: new THREE.Color('#ffb3a1') },
+    clarity:{ a: new THREE.Color('#ffffff'), b: new THREE.Color('#cbd7ff') },
+    chaos:  { a: new THREE.Color('#ff6fff'), b: new THREE.Color('#ad93ff') },
+  };
 
   // kleine Helpers
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -62,7 +77,7 @@ const EmotionalFractals = () => {
       subtitle: 'crystallized thought',
 
       speed: { min: 0.0006, max: 0.0010 },
-      complexity: { min: 2, max: 4  },
+      complexity: { min: 3, max: 4  },
       scale: { min: 0.75, max: 0.8 },
       particles: { min: 500, max: 900 },
       noiseScale: { min: 4.5, max: 5.0 },
@@ -70,7 +85,7 @@ const EmotionalFractals = () => {
       sharpness: { min: 4.0, max: 5.0 },
       waviness: { min: 0.1, max: 0.2 },
       shaderIntensityMul: { min: 0.25, max: 0.35 },
-      cpuDeformBase: { min: 0.1, max: 0.2 },
+      cpuDeformBase: { min: 0.1, max: 0.1 },
       cpuDeformVar: { min: 0.2, max: 0.2 },
     },
     chaos: {
@@ -79,13 +94,13 @@ const EmotionalFractals = () => {
       subtitle: 'beautiful disorder',
 
       speed: { min: 0.0020, max: 0.0030 },
-      complexity: { min: 4, max: 7 },
+      complexity: { min: 6, max: 8 },
       scale: { min: 1.1, max: 1.4 },
       particles: { min: 1600, max: 2400 },
-      noiseScale: { min: 3.5, max: 5.0 },
+      noiseScale: { min: 3.0, max: 5.0 },
       noiseSpeed: { min: 1.4, max: 2.0 },
       sharpness: { min: 0.4, max: 0.6 },
-      waviness: { min: 1.0, max: 5.0 },
+      waviness: { min: 0.15, max: 5.0 },
       shaderIntensityMul: { min: 0.25, max: 0.3 },
       cpuDeformBase: { min: 0.02, max: 0.3},
       cpuDeformVar: { min: 0.02, max: 0.3 },
@@ -105,7 +120,7 @@ const EmotionalFractals = () => {
       subtitle: s.subtitle,
 
       speed: eff('speed'),
-      complexity: clamp(Math.round(eff('complexity')), 1, 10), // als Octaves
+      complexity: clamp(Math.round(eff('complexity')), 1, 10),
       scale: eff('scale'),
       particles: eff('particles', true),
 
@@ -145,7 +160,7 @@ const EmotionalFractals = () => {
     renderer.setClearColor(0x000000, 1);
     rendererRef.current = renderer;
 
-    // ======= SHADERS (dein alter Vertex-Shader unverändert) =======
+    // ======= SHADERS =======
     const vertexShader = `
       varying vec3 vNormal;
       varying vec3 vPosition;
@@ -252,7 +267,6 @@ const EmotionalFractals = () => {
       }
     `;
 
-    // ======= Dein alter Fragment-Shader, nur minimal ergänzt =======
     const fragmentShader = `
       precision highp float;
       varying vec3 vNormal;
@@ -260,9 +274,7 @@ const EmotionalFractals = () => {
       uniform vec3 color;
       uniform float time;
       uniform float intensity;
-
-      // NEU: kleiner Limiter für sehr helle Situationen
-      uniform float glowLimiter; // 1.0 = unverändert, 0.8 = leicht gedämpft
+      uniform float glowLimiter;
 
       void main() {
         vec3 N = normalize(vNormal);
@@ -275,23 +287,17 @@ const EmotionalFractals = () => {
                         max(dot(N, L3), 0.0) * 0.2;
 
         float fresnel = pow(1.0 - abs(dot(N, vec3(0.0, 0.0, 1.0))), 2.5);
-
         float pulse = sin(time * 2.5) * 0.5 + 0.5;
 
         vec3 baseColor = color * (0.2 + 0.8 * lambert);
-
-        // HIER nur leicht gedämpft bei Bedarf:
         float glowStrength = (0.4 + pulse * 0.6) * (0.3 + intensity * 1.7) * glowLimiter;
         vec3 glowColor = color * glowStrength * fresnel;
-
         float innerGlow = pow(1.0 - length(vPosition) / 1.5, 2.0) * intensity * 0.3 * glowLimiter;
 
-        // Mildes Tonemapping gegen Ausbrennen (sehr dezent)
         vec3 finalColor = baseColor + glowColor + color * innerGlow;
         finalColor = finalColor / (finalColor + vec3(1.2));
 
         float alpha = clamp(0.5 * lambert + 0.85 * fresnel + innerGlow, 0.0, 1.0);
-
         gl_FragColor = vec4(finalColor, alpha);
       }
     `;
@@ -303,8 +309,6 @@ const EmotionalFractals = () => {
         time: { value: 0 },
         color: { value: emotionStates[currentState].color.clone() },
         intensity: { value: intensity },
-
-        // NEU: kleiner Limiter (wird in animate dynamisch gesetzt)
         glowLimiter: { value: 1.0 },
       },
       transparent: true,
@@ -321,7 +325,7 @@ const EmotionalFractals = () => {
     scene.add(orb);
     fractalRef.current = orb;
 
-    // Partikel Texture
+    // === Partikel Texture ===
     function makeCircleTexture(size = 64) {
       const c = document.createElement('canvas');
       c.width = c.height = size;
@@ -342,22 +346,35 @@ const EmotionalFractals = () => {
     }
     const discTexture = makeCircleTexture(64);
 
-    const createParticles = (count, color = new THREE.Color(1, 1, 1)) => {
+    // === NEU: Partikel mit zwei Farben (per-vertex colors) ===
+    const createParticles = (count, colorsObj) => {
       const geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(count * 3);
-      for (let i = 0; i < count * 3; i += 3) {
-        positions[i] = (Math.random() - 0.5) * 10;
-        positions[i + 1] = (Math.random() - 0.5) * 10;
-        positions[i + 2] = (Math.random() - 0.5) * 10;
+      const colors = new Float32Array(count * 3);
+
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        positions[i3]     = (Math.random() - 0.5) * 10;
+        positions[i3 + 1] = (Math.random() - 0.5) * 10;
+        positions[i3 + 2] = (Math.random() - 0.5) * 10;
+
+        const pickA = Math.random() < 0.5;
+        const c = pickA ? colorsObj.a : colorsObj.b;
+        colors[i3]     = c.r;
+        colors[i3 + 1] = c.g;
+        colors[i3 + 2] = c.b;
       }
+
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
       const mat = new THREE.PointsMaterial({
-        color,
-        size: 0.05,
+        color: 0xffffff,                 // VertexColors bleiben unverändert
+        size: PARTICLE_SIZE_BASE,
         sizeAttenuation: true,
         transparent: true,
-        opacity: 0.65,
+        opacity: PARTICLE_OPACITY_BASE,
+        vertexColors: true,
         map: discTexture,
         alphaMap: discTexture,
         depthWrite: false,
@@ -369,14 +386,9 @@ const EmotionalFractals = () => {
       return points;
     };
 
-    // Start-Partikel anhand aktueller effektiver Parameter
+    // Start-Partikel (nimmt die 2 Farben der aktuellen Emotion)
     const eff0 = getEffective(currentState, intensity);
-    const particleTint = new THREE.Color(
-      Math.min(eff0.color.r * 1.3, 1),
-      Math.min(eff0.color.g * 1.3, 1),
-      Math.min(eff0.color.b * 1.3, 1)
-    );
-    const particles = createParticles(eff0.particles, particleTint);
+    const particles = createParticles(eff0.particles, particleColors[currentState]);
     scene.add(particles);
     particlesRef.current = particles;
 
@@ -430,32 +442,24 @@ const EmotionalFractals = () => {
     const animate = () => {
       animationId = requestAnimationFrame(animate);
 
-      // Effektive Parameter aus Emotion + Slider
       const eff = getEffective(currentState, intensity);
-
-      // Time mit eff.speed
       const time = Date.now() * eff.speed;
 
       if (fractalRef.current) {
-        // subtile Rotation
         const rotationSpeed = 0.8 + (intensity * 0.2);
         fractalRef.current.rotation.x = time * 0.45 * rotationSpeed;
         fractalRef.current.rotation.y = time * 0.28 * rotationSpeed;
 
-        // Shader Uniforms
         const u = fractalRef.current.material.uniforms;
         u.time.value = time;
         u.intensity.value = clamp(intensity * eff.shaderIntensityMul, 0.0, 1.6);
 
-        // *** NEU: ganz leichte Dämpfung nur für clarity/chaos ab > 0.5 ***
         let limiter = 1.0;
         if ((currentState === 'clarity' || currentState === 'chaos') && intensity > 0.5) {
-          // reduziert max. um ~20% bei Intensity 1.0 (sehr subtil)
-          limiter = 1.0 - (intensity - 0.5) * 0.4; // 1.0 -> 0.8
+          limiter = 1.0 - (intensity - 0.5) * 0.4;
         }
         u.glowLimiter.value = clamp(limiter, 0.8, 1.0);
 
-        // ==== CPU-Deformation mit effektiven Parametern ====
         const geometry = fractalRef.current.geometry;
         const positions = geometry.attributes.position.array;
         const originalPos = geometry.userData.originalPositions;
@@ -465,7 +469,7 @@ const EmotionalFractals = () => {
         const noiseSpeed = eff.noiseSpeed;
         const sharpness = eff.sharpness;
         const waviness = eff.waviness;
-        const octaves = eff.complexity; // FBM-Komplexität
+        const octaves = eff.complexity;
 
         for (let i = 0; i < positions.length; i += 3) {
           const x = originalPos[i];
@@ -520,7 +524,6 @@ const EmotionalFractals = () => {
         geometry.attributes.position.needsUpdate = true;
         geometry.computeVertexNormals();
 
-        // Größe
         const targetScale = eff.scale;
         fractalRef.current.scale.lerp(
           new THREE.Vector3(targetScale, targetScale, targetScale),
@@ -532,27 +535,24 @@ const EmotionalFractals = () => {
       if (particlesRef.current) {
         const desired = getEffective(currentState, intensity).particles;
 
+        // Neu erzeugen, wenn Anzahl stark abweicht
         if (Math.abs(desired - particleCountRef.current) > 50) {
           sceneRef.current.remove(particlesRef.current);
           particlesRef.current.geometry.dispose();
           particlesRef.current.material.dispose();
 
-          const tint = new THREE.Color(
-            Math.min(eff.color.r * 1.3, 1),
-            Math.min(eff.color.g * 1.3, 1),
-            Math.min(eff.color.b * 1.3, 1)
-          );
-          const repl = createParticles(desired, tint);
+          const repl = createParticles(desired, particleColors[currentState]);
           sceneRef.current.add(repl);
           particlesRef.current = repl;
         }
 
+        // Größe/Opacity dynamisch
         const pm = particlesRef.current.material;
         particlesRef.current.rotation.y = time * 0.1;
+        pm.size = PARTICLE_SIZE_BASE + intensity * PARTICLE_SIZE_VAR;
+        pm.opacity = clamp(PARTICLE_OPACITY_BASE + intensity * PARTICLE_OPACITY_VAR, 0, 1);
 
-        pm.size = 0.04 + intensity * 0.04;
-        pm.opacity = 0.45 + intensity * 0.25;
-
+        // leichte Aufwärtsbewegung
         const arr = particlesRef.current.geometry.attributes.position.array;
         for (let i = 0; i < arr.length; i += 3) {
           arr[i + 1] += Math.sin(time + arr[i]) * (0.0008 + intensity * 0.0008);
@@ -590,7 +590,7 @@ const EmotionalFractals = () => {
       }
       renderer.dispose();
     };
-  }, [currentState, intensity]); // intensity bleibt drin, damit Partikel ggf. neu gebaut werden
+  }, [currentState, intensity]);
 
   // Emotions-Wechsel: Farbe weich und Partikel sofort anpassen
   useEffect(() => {
@@ -601,34 +601,44 @@ const EmotionalFractals = () => {
     // Shader-Farbe smooth
     fractalRef.current.material.uniforms.color.value.lerp(eff.color, 0.2);
 
-    // Partikel neu erstellen in Emotionsfarbe
+    // Partikel neu erstellen (mit 2 Farben der aktuellen Emotion)
     if (particlesRef.current) {
       sceneRef.current.remove(particlesRef.current);
       particlesRef.current.geometry.dispose();
       particlesRef.current.material.dispose();
     }
-    const tint = new THREE.Color(
-      Math.min(eff.color.r * 1.3, 1),
-      Math.min(eff.color.g * 1.3, 1),
-      Math.min(eff.color.b * 1.3, 1)
-    );
 
     const geometryCount = eff.particles;
-    const createParticlesLocal = (count) => {
+
+    // lokale Rekonstruktion mit zwei Farben
+    const createParticlesLocal = (count, colorsObj) => {
       const geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(count * 3);
-      for (let i = 0; i < count * 3; i += 3) {
-        positions[i] = (Math.random() - 0.5) * 10;
-        positions[i + 1] = (Math.random() - 0.5) * 10;
-        positions[i + 2] = (Math.random() - 0.5) * 10;
+      const colors = new Float32Array(count * 3);
+
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        positions[i3]     = (Math.random() - 0.5) * 10;
+        positions[i3 + 1] = (Math.random() - 0.5) * 10;
+        positions[i3 + 2] = (Math.random() - 0.5) * 10;
+
+        const pickA = Math.random() < 0.5;
+        const c = pickA ? colorsObj.a : colorsObj.b;
+        colors[i3]     = c.r;
+        colors[i3 + 1] = c.g;
+        colors[i3 + 2] = c.b;
       }
+
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
       const mat = new THREE.PointsMaterial({
-        color: tint,
-        size: 0.05,
+        color: 0xffffff,
+        size: PARTICLE_SIZE_BASE,
         sizeAttenuation: true,
         transparent: true,
-        opacity: 0.6,
+        opacity: PARTICLE_OPACITY_BASE,
+        vertexColors: true,
         map: (function () {
           const c = document.createElement('canvas');
           c.width = c.height = 64;
@@ -649,12 +659,13 @@ const EmotionalFractals = () => {
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       });
+
       const pts = new THREE.Points(geometry, mat);
       particleCountRef.current = count;
       return pts;
     };
 
-    const pts = createParticlesLocal(geometryCount);
+    const pts = createParticlesLocal(geometryCount, particleColors[currentState]);
     sceneRef.current.add(pts);
     particlesRef.current = pts;
   }, [currentState]);
@@ -668,12 +679,12 @@ const EmotionalFractals = () => {
         .ef-range {
           -webkit-appearance: none;
           appearance: none;
-          background: transparent; /* wir setzen den Verlauf inline */
+          background: transparent;
         }
         .ef-range::-webkit-slider-runnable-track {
           height: 4px;
           border-radius: 9999px;
-          background: transparent; /* wird via inline-style gesetzt */
+          background: transparent;
         }
         .ef-range::-moz-range-track {
           height: 4px;
@@ -685,7 +696,7 @@ const EmotionalFractals = () => {
           width: 12px; height: 12px; border-radius: 9999px;
           background: #ffffff;
           box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
-          margin-top: -4px; /* zentriert auf 4px Track */
+          margin-top: -4px;
           cursor: pointer;
         }
         .ef-range::-moz-range-thumb {
@@ -773,7 +784,7 @@ const EmotionalFractals = () => {
           </div>
         </div>
 
-        {/* SLIDER: schmalerer, transparenter Rahmen + dünner Track */}
+        {/* SLIDER */}
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-96 pointer-events-auto">
           <div className="backdrop-blur-sm bg-white/5 rounded-full px-4 py-2.5 border border-white/10">
             <div className="text-center mb-2">
