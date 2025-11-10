@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/emotional-orbs/static/css/main.b768e8d2.css",
+    "main.js": "/emotional-orbs/static/js/main.5a07a409.js",
+    "static/js/453.a30ae78c.chunk.js": "/emotional-orbs/static/js/453.a30ae78c.chunk.js",
+    "index.html": "/emotional-orbs/index.html",
+    "main.b768e8d2.css.map": "/emotional-orbs/static/css/main.b768e8d2.css.map",
+    "main.5a07a409.js.map": "/emotional-orbs/static/js/main.5a07a409.js.map",
+    "453.a30ae78c.chunk.js.map": "/emotional-orbs/static/js/453.a30ae78c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b768e8d2.css",
+    "static/js/main.5a07a409.js"
+  ]
+}
