@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/emotional-orbs/static/css/main.296f03ed.css",
-    "main.js": "/emotional-orbs/static/js/main.daac04a0.js",
+    "main.css": "/emotional-orbs/static/css/main.9aee6e86.css",
+    "main.js": "/emotional-orbs/static/js/main.c313c87f.js",
     "static/js/453.a30ae78c.chunk.js": "/emotional-orbs/static/js/453.a30ae78c.chunk.js",
     "index.html": "/emotional-orbs/index.html",
-    "main.296f03ed.css.map": "/emotional-orbs/static/css/main.296f03ed.css.map",
-    "main.daac04a0.js.map": "/emotional-orbs/static/js/main.daac04a0.js.map",
+    "main.9aee6e86.css.map": "/emotional-orbs/static/css/main.9aee6e86.css.map",
+    "main.c313c87f.js.map": "/emotional-orbs/static/js/main.c313c87f.js.map",
     "453.a30ae78c.chunk.js.map": "/emotional-orbs/static/js/453.a30ae78c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.296f03ed.css",
-    "static/js/main.daac04a0.js"
+    "static/css/main.9aee6e86.css",
+    "static/js/main.c313c87f.js"
   ]
 }
