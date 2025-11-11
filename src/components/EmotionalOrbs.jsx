@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 
 const EmotionalFractals = () => {
@@ -38,6 +38,7 @@ const EmotionalFractals = () => {
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lerp  = (a, b, t) => a + (b - a) * t;
   const toRGB = (c) => `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
+  const toRGBA = (c, a=1) => `rgba(${toRGB(c)}, ${a})`;
 
   // ====== Audio-Konfig ======
   const emotionAudioFiles = {
@@ -281,6 +282,29 @@ const EmotionalFractals = () => {
     };
   };
 
+  // ===== UI-Farben für Sound-Button (aus aktuellem Emotions-Farbwert) =====
+  const uiColor = useMemo(() => {
+    // leichte Sättigung/Intensität verstärken ohne Weiß zu überblenden
+    const c = emotionStates[currentState].color.clone();
+    // bei clarity leichtes Blau beibehalten
+    return c;
+  }, [currentState]);
+
+  const soundButtonStyle = useMemo(() => {
+    const rgb = toRGB(uiColor);
+    return soundEnabled
+      ? {
+          background: `linear-gradient(135deg, rgba(${rgb}, 0.18), rgba(${rgb}, 0.35))`,
+          border: `2px solid rgba(${rgb}, 0.55)`,
+          boxShadow: `0 0 22px rgba(${rgb}, 0.55), inset 0 0 22px rgba(${rgb}, 0.18)`,
+        }
+      : {
+          background: 'rgba(255, 255, 255, 0.08)',
+          border: `2px solid rgba(${rgb}, 0.35)`,
+          boxShadow: `0 4px 16px rgba(0,0,0,0.35)`,
+        };
+  }, [soundEnabled, uiColor]);
+
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -380,7 +404,6 @@ const EmotionalFractals = () => {
 
       // Ridged fbm-Flavor
       float ridged(vec3 p) {
-        // 1 - |noise| erzeugt Kämme; mehrere Oktaven geben Struktur
         float v = 0.0;
         float a = 0.5;
         float f = 1.0;
@@ -402,10 +425,8 @@ const EmotionalFractals = () => {
         float t = time * uNoiseSpeed;
         float pulse = sin(time * uPulseFreq) * 0.5 + 0.5;
 
-        // Basis-Koordinaten (normalbezogen, damit es „über die Oberfläche“ arbeitet)
         vec3 base = normalize(normal) * uNoiseScale;
 
-        // Domain-Warp Feld
         vec3 warpVec = vec3(
           snoise(base + vec3(13.1, 0.0, 0.0) + t),
           snoise(base + vec3(0.0, 7.7, 0.0) + t*1.1),
@@ -413,22 +434,18 @@ const EmotionalFractals = () => {
         );
         vec3 pw = base + uWarp * warpVec * uWarpScale;
 
-        // Soft vs Ridged Mischung
         float nSoft = fbm(pw * 1.0);
         float nRidge = ridged(pw * 1.2);
         float nMix = mix(nSoft, nRidge, clamp(uRidge, 0.0, 1.0));
 
-        // Deformation (Noise + Pulse)
         float deform = uNoiseAmp * (nMix * (0.6 + 0.4 * pulse));
         pos += normal * deform * (1.0 + 0.5 * intensity);
 
-        // Wellen-Layer (Shader-Feinstruktur)
         float w = sin(pos.x * uWaveFreq + time * 1.3) *
                   cos(pos.y * uWaveFreq * 0.9 + time * 1.1) *
                   sin(pos.z * uWaveFreq * 0.8 + time * 0.9);
         pos += normal * (uWaveAmp * w);
 
-        // Twist (Torsion)
         float twist = sin(pos.y * uTwistFreq + time) * cos(pos.x * uTwistFreq - time) * uTwistAmp * (0.6 + 0.4 * intensity);
         vec3 twisted = vec3(
           pos.x + twist * normal.x,
@@ -578,7 +595,7 @@ const EmotionalFractals = () => {
     scene.add(particles);
     particlesRef.current = particles;
 
-    // ===== CPU-Noise für große Wellen (wie gehabt) =====
+    // ===== CPU-Noise für große Wellen =====
     const noise3D = (x, y, z) => {
       const p = [x, y, z];
       const floor = (v) => [Math.floor(v[0]), Math.floor(v[1]), Math.floor(v[2])];
@@ -634,7 +651,7 @@ const EmotionalFractals = () => {
         u.time.value = time;
         u.intensity.value = clamp(intensity * eff.shaderIntensityMul, 0.0, 1.6);
 
-        // Neue GPU-Uniforms aus Eff
+        // Neue GPU-Uniforms
         u.uNoiseAmp.value   = eff.noiseAmp;
         u.uRidge.value      = eff.ridge;
         u.uWarp.value       = eff.warp;
@@ -653,7 +670,7 @@ const EmotionalFractals = () => {
         }
         u.glowLimiter.value = clamp(limiter, 0.8, 1.0);
 
-        // CPU-Deform (grobe, „atmende“ Form bleibt)
+        // CPU-Deform
         const geometry = fractalRef.current.geometry;
         const positions = geometry.attributes.position.array;
         const originalPos = geometry.userData.originalPositions;
@@ -705,7 +722,7 @@ const EmotionalFractals = () => {
         fractalRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.12);
       }
 
-      // ===== Partikel (inkl. „Breathing“) =====
+      // ===== Partikel =====
       if (particlesRef.current) {
         const desired = getEffective(currentState, intensity).particles;
 
@@ -721,7 +738,6 @@ const EmotionalFractals = () => {
         const pm = particlesRef.current.material;
         particlesRef.current.rotation.y = time * 0.10;
 
-        // Breathing gekoppelt an PulseFreq
         const pulseBreath = 0.5 + 0.5 * Math.sin(time * eff.pulseFreq);
         pm.size = (PARTICLE_SIZE_BASE + intensity * PARTICLE_SIZE_VAR) * (0.92 + 0.16 * pulseBreath);
         pm.opacity = clamp(PARTICLE_OPACITY_BASE + intensity * PARTICLE_OPACITY_VAR, 0, 1);
@@ -735,7 +751,7 @@ const EmotionalFractals = () => {
         particlesRef.current.geometry.attributes.position.needsUpdate = true;
       }
 
-      // ===== Kamera: sanfter Float + Cursor-Follow =====
+      // ===== Kamera =====
       const cam = cameraRef.current;
       const floatZ = 0.06 * Math.sin(time * 0.4);
       cam.position.x += (mouseRef.current.x * 0.5 - cam.position.x) * 0.05;
@@ -776,7 +792,7 @@ const EmotionalFractals = () => {
     // Shader-Farbe weich anfahren
     fractalRef.current.material.uniforms.color.value.lerp(eff.color, 0.2);
 
-    // Neue GPU-Uniforms sofort setzen, damit Reaktion direkt sichtbar ist
+    // Neue GPU-Uniforms sofort setzen
     const u = fractalRef.current.material.uniforms;
     u.uNoiseAmp.value   = eff.noiseAmp;
     u.uRidge.value      = eff.ridge;
@@ -1096,7 +1112,7 @@ const EmotionalFractals = () => {
               <div className="text-center mb-1 flex items-center justify-center gap-2">
                 <span
                   className="text-xs font-bold uppercase tracking-widest opacity-70"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif', color: 'white" }}
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}
                 >
                   Intensity
                 </span>
@@ -1127,17 +1143,7 @@ const EmotionalFractals = () => {
             <button
               onClick={toggleSound}
               className="md:hidden flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
-              style={{
-                background: soundEnabled
-                  ? 'linear-gradient(135deg, rgba(100, 255, 150, 0.3), rgba(100, 200, 255, 0.3))'
-                  : 'rgba(255, 255, 255, 0.1)',
-                border: soundEnabled
-                  ? '2px solid rgba(100, 255, 150, 0.5)'
-                  : '2px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: soundEnabled
-                  ? '0 0 20px rgba(100, 255, 150, 0.4), inset 0 0 20px rgba(100, 255, 150, 0.1)'
-                  : '0 4px 15px rgba(0, 0, 0, 0.3)',
-              }}
+              style={soundButtonStyle}
             >
               {soundEnabled ? (
                 <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -1153,21 +1159,11 @@ const EmotionalFractals = () => {
         </div>
       </div>
 
-      {/* Desktop Sound Button (optional sichtbar lassen) */}
+      {/* Desktop Sound Button */}
       <button
         onClick={toggleSound}
         className="fixed bottom-8 right-8 z-40 w-14 h-14 rounded-full md:flex items-center justify-center transition-all duration-300 hover:scale-110 hidden"
-        style={{
-          background: soundEnabled
-            ? 'linear-gradient(135deg, rgba(100, 255, 150, 0.3), rgba(100, 200, 255, 0.3))'
-            : 'rgba(255, 255, 255, 0.1)',
-          border: soundEnabled
-            ? '2px solid rgba(100, 255, 150, 0.5)'
-            : '2px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: soundEnabled
-            ? '0 0 20px rgba(100, 255, 150, 0.4), inset 0 0 20px rgba(100, 255, 150, 0.1)'
-            : '0 4px 15px rgba(0, 0, 0, 0.3)',
-        }}
+        style={soundButtonStyle}
       >
         {soundEnabled ? (
           <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
