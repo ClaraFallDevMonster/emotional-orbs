@@ -176,7 +176,7 @@ const EmotionalFractals = () => {
   const emotionStates = {
     calm: {
       color: new THREE.Color(0.60, 0.80, 0.95), title: 'Calm', subtitle: 'breathe in serenity',
-      speed: { min: 0.0004, max: 0.0010 }, complexity: { min: 3, max: 4 }, scale: { min: 0.9, max: 1.2 },
+      speed: { min: 0.0004, max: 0.0010 }, complexity: { min: 3, max: 4 }, scale: { min: 0.9, max: 1.3 },
       particles: { min: 600, max: 1000 }, noiseScale: { min: 0.8, max: 1.0 }, noiseSpeed: { min: 0.2, max: 0.4 },
       sharpness: { min: 0.1, max: 0.2 }, waviness: { min: 2.0, max: 2.5 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.055 }, cpuDeformVar: { min: 0.04, max: 0.0 },
@@ -198,13 +198,13 @@ const EmotionalFractals = () => {
       color: new THREE.Color(0.95, 0.30, 0.40), title: 'Tension', subtitle: 'energy compressed',
       speed: { min: 0.0012, max: 0.0022 }, complexity: { min: 2.5, max: 3.0 }, scale: { min: 1.1, max: 1.3 },
       particles: { min: 900, max: 1500 }, noiseScale: { min: 1.4, max: 1.5 }, noiseSpeed: { min: 1.0, max: 1.7 },
-      sharpness: { min: 0.3, max: 0.3 }, waviness: { min: 0.7, max: 0.9 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
+      sharpness: { min: 0.2, max: 0.3 }, waviness: { min: 0.7, max: 0.9 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.2, max: 0.3 }, cpuDeformVar: { min: 0.1, max: 0.2 },
 
-      noiseAmp:   { min: 0.02, max: 0.10 },
+      noiseAmp:   { min: 0.02, max: 0.20 },
       ridge:      { min: 0.05, max: 0.1 },
-      warp:       { min: 1.35, max: 1.55 },
-      warpScale:  { min: 1.0,  max: 1.6 },
+      warp:       { min: 1.35, max: 9.0 },
+      warpScale:  { min: 1.0,  max: 9.0 },
       twistAmp:   { min: 0.06, max: 0.14 },
       twistFreq:  { min: 2.0,  max: 3.2 },
       pulseFreq:  { min: 3.0,  max: 5.2 },
@@ -215,8 +215,8 @@ const EmotionalFractals = () => {
     },
     clarity: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
-      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 5.5 }, scale: { min: 0.65, max: 0.7 },
-      particles: { min: 500, max: 900 }, noiseScale: { min: 3.0, max: 5.0 }, noiseSpeed: { min: 0.4, max: 0.7 },
+      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 5.5 }, scale: { min: 0.65, max: 0.67 },
+      particles: { min: 500, max: 900 }, noiseScale: { min: 3.5, max: 5.5 }, noiseSpeed: { min: 0.4, max: 0.7 },
       sharpness: { min: 4.0, max: 5.0 }, waviness: { min: 0.1, max: 0.2 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.1 },
 
@@ -234,7 +234,7 @@ const EmotionalFractals = () => {
     },
     chaos: {
       color: new THREE.Color(0.80, 0.50, 0.90), title: 'Chaos', subtitle: 'beautiful disorder',
-      speed: { min: 0.0020, max: 0.0030 }, complexity: { min: 2, max: 2 }, scale: { min: 1.1, max: 1.3 },
+      speed: { min: 0.0020, max: 0.0030 }, complexity: { min: 2, max: 2 }, scale: { min: 1.0, max: 1.2 },
       particles: { min: 1600, max: 2400 }, noiseScale: { min: 0.5, max: 3.0 }, noiseSpeed: { min: 1.8, max: 2.0 },
       sharpness: { min: 0.4, max: 1.0}, waviness: { min: 1.0, max: 9.0 }, shaderIntensityMul: { min: 0.25, max: 0.2 },
       cpuDeformBase: { min: 0.02, max: 0.3 }, cpuDeformVar: { min: 0.02, max: 0.3 },
@@ -243,7 +243,7 @@ const EmotionalFractals = () => {
       ridge:      { min: 0.20, max: 0.60 },
       warp:       { min: 0.25, max: 0.55 },
       warpScale:  { min: 0.9,  max: 2.2 },
-      twistAmp:   { min: 0.08, max: 7.0 },
+      twistAmp:   { min: 0.1, max: 3.0 },
       twistFreq:  { min: 4.6,  max: 7.2 },
       pulseFreq:  { min: 1.4,  max: 4.8 },
       waveAmp:    { min: 0.06, max: 0.16 },
