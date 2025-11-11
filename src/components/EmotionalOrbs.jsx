@@ -216,13 +216,13 @@ const EmotionalFractals = () => {
     },
     clarity: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
-      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 5.5 }, scale: { min: 0.65, max: 0.67 },
-      particles: { min: 500, max: 900 }, noiseScale: { min: 3.5, max: 5.5 }, noiseSpeed: { min: 0.4, max: 0.7 },
-      sharpness: { min: 4.0, max: 5.0 }, waviness: { min: 0.1, max: 0.2 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
+      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 5.0 }, scale: { min: 0.65, max: 0.67 },
+      particles: { min: 500, max: 900 }, noiseScale: { min: 2.3, max: 4.5 }, noiseSpeed: { min: 0.4, max: 0.7 },
+      sharpness: { min: 3.0, max: 5.0 }, waviness: { min: 0.1, max: 0.2 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.1 },
 
-      noiseAmp:   { min: 0.08, max: 0.18 },
-      ridge:      { min: 2.0, max: 3.0 }, // kristalliner
+      noiseAmp:   { min: 0.08, max: 0.10 },
+      ridge:      { min: 2.0, max: 5.0 },
       warp:       { min: 0.05, max: 0.15 },
       warpScale:  { min: 1.4,  max: 2.2 },
       twistAmp:   { min: 0.02, max: 0.06 },
@@ -282,11 +282,9 @@ const EmotionalFractals = () => {
     };
   };
 
-  // ===== UI-Farben für Sound-Button (aus aktuellem Emotions-Farbwert) =====
+  // ===== UI-Farben für Sound-Button =====
   const uiColor = useMemo(() => {
-    // leichte Sättigung/Intensität verstärken ohne Weiß zu überblenden
     const c = emotionStates[currentState].color.clone();
-    // bei clarity leichtes Blau beibehalten
     return c;
   }, [currentState]);
 
@@ -321,7 +319,7 @@ const EmotionalFractals = () => {
     renderer.setClearColor(0x000000, 1);
     rendererRef.current = renderer;
 
-    // ====== Vertex-Shader mit Domain-Warping + Ridged-Noise + neuen Uniforms ======
+    // ====== Vertex-Shader ======
     const vertexShader = `
       varying vec3 vNormal;
       varying vec3 vPosition;
@@ -329,7 +327,6 @@ const EmotionalFractals = () => {
       uniform float time;
       uniform float intensity;
 
-      // Neue Uniforms
       uniform float uNoiseAmp;
       uniform float uRidge;
       uniform float uWarp;
@@ -402,7 +399,6 @@ const EmotionalFractals = () => {
         return value;
       }
 
-      // Ridged fbm-Flavor
       float ridged(vec3 p) {
         float v = 0.0;
         float a = 0.5;
@@ -595,7 +591,7 @@ const EmotionalFractals = () => {
     scene.add(particles);
     particlesRef.current = particles;
 
-    // ===== CPU-Noise für große Wellen =====
+    // ===== CPU-Noise =====
     const noise3D = (x, y, z) => {
       const p = [x, y, z];
       const floor = (v) => [Math.floor(v[0]), Math.floor(v[1]), Math.floor(v[2])];
@@ -995,7 +991,7 @@ const EmotionalFractals = () => {
               </div>
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif', color: 'white" }}>
                   <span className="font-semibold">Select emotions</span> on the left to experience different states, each with unique visual and sonic properties.
                 </p>
               </div>
@@ -1038,9 +1034,10 @@ const EmotionalFractals = () => {
       `}</style>
 
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center pointer-events-auto">
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center pointer-events-auto px-4">
+          {/* Titel: auf Mobile kleiner (text-5xl), ab md wie gehabt (text-7xl) */}
           <h1
-            className="text-7xl font-light tracking-wider mb-2 transition-all duration-1000"
+            className="font-light tracking-wider mb-1 transition-all duration-1000 text-5xl md:text-7xl"
             style={{
               fontFamily: "'Cormorant Garamond', serif",
               color: `rgb(${toRGB(getEffective(currentState, intensity).color)})`,
@@ -1055,17 +1052,24 @@ const EmotionalFractals = () => {
           >
             {emotionStates[currentState].title}
           </h1>
+
+          {/* Subtitle: auf Mobile deutlich kleiner (text-xs), ab md wie gehabt */}
           <p
-            className="text-xl font-bold tracking-widest uppercase opacity-80"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: '#ffffff' }}
+            className="font-bold uppercase opacity-80 mx-auto text-xs md:text-xl tracking-[0.2em] md:tracking-widest"
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              color: '#ffffff',
+              maxWidth: 'min(90vw, 38rem)'
+            }}
           >
             {emotionStates[currentState].subtitle}
           </p>
         </div>
 
-        <div className="absolute top-1/2 left-8 -translate-y-1/2 pointer-events-auto">
-          <div className="p-2">
-            <div className="flex flex-col gap-4">
+        {/* Emotions-Buttons links: auf Mobile minimal kleiner */}
+        <div className="absolute top-1/2 left-6 md:left-8 -translate-y-1/2 pointer-events-auto">
+          <div className="p-1.5 md:p-2">
+            <div className="flex flex-col gap-3 md:gap-4">
               {Object.keys(emotionStates).map((state) => {
                 const c = emotionStates[state].color;
                 const isActive = currentState === state;
@@ -1074,7 +1078,7 @@ const EmotionalFractals = () => {
                   <button
                     key={state}
                     onClick={() => setCurrentState(state)}
-                    className="group relative px-6 py-3 rounded-2xl transition-all duration-300 hover:scale-105"
+                    className="group relative rounded-xl md:rounded-2xl transition-all duration-300 hover:scale-105 px-5 py-2.5 md:px-6 md:py-3"
                     style={{
                       background: isActive ? `rgba(${cStr}, 0.16)` : 'rgba(255,255,255,0.05)',
                       border: isActive ? `2px solid rgba(${cStr}, 0.55)` : '2px solid rgba(255,255,255,0.12)',
@@ -1084,14 +1088,14 @@ const EmotionalFractals = () => {
                     }}
                   >
                     <div
-                      className="absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
+                      className="absolute -left-4 md:-left-5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full"
                       style={{
                         backgroundColor: `rgb(${toRGB(c)})`,
                         boxShadow: `0 0 10px rgba(${toRGB(c)},0.9)`,
                       }}
                     />
                     <span
-                      className="text-sm font-semibold uppercase tracking-wider"
+                      className="font-semibold uppercase tracking-wider text-[11px] md:text-sm"
                       style={{
                         fontFamily: "'Space Grotesk', sans-serif",
                         color: isActive ? 'white' : 'rgba(255,255,255,0.7)',
@@ -1111,7 +1115,7 @@ const EmotionalFractals = () => {
             <div className="flex-1">
               <div className="text-center mb-1 flex items-center justify-center gap-2">
                 <span
-                  className="text-xs font-bold uppercase tracking-widest opacity-70"
+                  className="text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-70"
                   style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}
                 >
                   Intensity
@@ -1142,7 +1146,7 @@ const EmotionalFractals = () => {
             {/* Mobile Sound Button */}
             <button
               onClick={toggleSound}
-              className="md:hidden flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+              className="md:hidden flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
               style={soundButtonStyle}
             >
               {soundEnabled ? (
