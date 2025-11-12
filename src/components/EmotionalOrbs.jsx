@@ -8,6 +8,7 @@ const EmotionalFractals = () => {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [showModal, setShowModal] = useState(true);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const audioContextRef = useRef(null);
   const oscillatorRef = useRef(null);
@@ -52,6 +53,16 @@ const EmotionalFractals = () => {
     clarity: { frequency: 528, detune: 0,  filterFreq: 4000, volume: 0.18 },
     chaos:   { frequency: 666, detune: 50, filterFreq: 1500, volume: 0.22 }
   };
+
+  // Detect mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const initSound = () => {
     if (!audioContextRef.current) {
@@ -619,6 +630,7 @@ const EmotionalFractals = () => {
 
       const eff = getEffective(currentState, intensity);
       const time = Date.now() * eff.speed;
+      const mobileCheck = window.innerWidth < 768;
 
       if (fractalRef.current) {
         const rotationSpeed = 0.8 + (intensity * 0.2);
@@ -694,7 +706,9 @@ const EmotionalFractals = () => {
         geometry.attributes.position.needsUpdate = true;
         geometry.computeVertexNormals();
 
-        const targetScale = eff.scale;
+        // Apply mobile scale multiplier
+        const mobileScaleMultiplier = mobileCheck ? 0.65 : 1.0;
+        const targetScale = eff.scale * mobileScaleMultiplier;
         fractalRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.12);
       }
 
@@ -756,7 +770,7 @@ const EmotionalFractals = () => {
       }
       renderer.dispose();
     };
-  }, [currentState, intensity]);
+  }, [currentState, intensity, isMobile]);
 
   useEffect(() => {
     if (!fractalRef.current || !sceneRef.current) return;
