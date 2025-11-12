@@ -22,7 +22,6 @@ const EmotionalFractals = () => {
   const particleCountRef = useRef(0);
   const mouseRef = useRef({ x: 0, y: 0 });
 
-  // ===== Partikel-Settings =====
   const PARTICLE_SIZE_BASE = 0.022;
   const PARTICLE_SIZE_VAR = 0.020;
   const PARTICLE_OPACITY_BASE = 0.52;
@@ -40,7 +39,6 @@ const EmotionalFractals = () => {
   const toRGB = (c) => `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
   const toRGBA = (c, a=1) => `rgba(${toRGB(c)}, ${a})`;
 
-  // ====== Audio-Konfig ======
   const emotionAudioFiles = {
     calm: null,
     tension: null,
@@ -89,7 +87,6 @@ const EmotionalFractals = () => {
       return;
     }
 
-    // Fallback: Synth
     initSound();
     const ctx = audioContextRef.current;
     if (oscillatorRef.current) oscillatorRef.current.stop();
@@ -173,7 +170,6 @@ const EmotionalFractals = () => {
     }
   }, [intensity, soundEnabled, currentState]);
 
-  // ====== Emotion States mit neuen Parametern ======
   const emotionStates = {
     calm: {
       color: new THREE.Color(0.60, 0.80, 0.95), title: 'Calm', subtitle: 'breathe in serenity',
@@ -181,8 +177,6 @@ const EmotionalFractals = () => {
       particles: { min: 600, max: 1000 }, noiseScale: { min: 0.8, max: 1.0 }, noiseSpeed: { min: 0.2, max: 0.4 },
       sharpness: { min: 0.1, max: 0.2 }, waviness: { min: 2.0, max: 2.5 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.055 }, cpuDeformVar: { min: 0.04, max: 0.0 },
-
-      // Neu (GPU)
       noiseAmp:   { min: 0, max: 0 },
       ridge:      { min: 0.00, max: 0.15 },
       warp:       { min: 0.10, max: 0.25 },
@@ -198,14 +192,13 @@ const EmotionalFractals = () => {
     tension: {
       color: new THREE.Color(0.95, 0.30, 0.40), title: 'Tension', subtitle: 'energy compressed',
       speed: { min: 0.0012, max: 0.0022 }, complexity: { min: 2.5, max: 3.0 }, scale: { min: 1.1, max: 1.3 },
-      particles: { min: 900, max: 1500 }, noiseScale: { min: 1.4, max: 1.5 }, noiseSpeed: { min: 1.0, max: 1.7 },
-      sharpness: { min: 0.2, max: 0.3 }, waviness: { min: 0.7, max: 0.9 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
-      cpuDeformBase: { min: 0.2, max: 0.3 }, cpuDeformVar: { min: 0.1, max: 0.2 },
-
-      noiseAmp:   { min: 0.02, max: 0.20 },
+      particles: { min: 900, max: 1500 }, noiseScale: { min: 1.4, max: 2.5 }, noiseSpeed: { min: 1.0, max: 1.7 },
+      sharpness: { min: 0.2, max: 0.3 }, waviness: { min: 0.7, max: 1.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
+      cpuDeformBase: { min: 0.2, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.2 },
+      noiseAmp:   { min: 0.02, max: 0.10 },
       ridge:      { min: 0.05, max: 0.1 },
-      warp:       { min: 1.35, max: 9.0 },
-      warpScale:  { min: 1.0,  max: 9.0 },
+      warp:       { min: 1.35, max: 7.0 },
+      warpScale:  { min: 1.0,  max: 7.0 },
       twistAmp:   { min: 0.06, max: 0.14 },
       twistFreq:  { min: 2.0,  max: 3.2 },
       pulseFreq:  { min: 3.0,  max: 5.2 },
@@ -217,10 +210,9 @@ const EmotionalFractals = () => {
     clarity: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
       speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 5.0 }, scale: { min: 0.65, max: 0.67 },
-      particles: { min: 500, max: 900 }, noiseScale: { min: 2.3, max: 4.5 }, noiseSpeed: { min: 0.4, max: 0.7 },
+      particles: { min: 500, max: 900 }, noiseScale: { min: 2.8, max: 5.5 }, noiseSpeed: { min: 0.4, max: 0.7 },
       sharpness: { min: 3.0, max: 5.0 }, waviness: { min: 0.1, max: 0.2 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.1 },
-
       noiseAmp:   { min: 0.08, max: 0.10 },
       ridge:      { min: 2.0, max: 5.0 },
       warp:       { min: 0.05, max: 0.15 },
@@ -235,22 +227,21 @@ const EmotionalFractals = () => {
     },
     chaos: {
       color: new THREE.Color(0.80, 0.50, 0.90), title: 'Chaos', subtitle: 'beautiful disorder',
-      speed: { min: 0.0020, max: 0.0030 }, complexity: { min: 2, max: 2 }, scale: { min: 1.0, max: 1.2 },
-      particles: { min: 1600, max: 2400 }, noiseScale: { min: 0.5, max: 3.0 }, noiseSpeed: { min: 1.8, max: 2.0 },
-      sharpness: { min: 0.4, max: 1.0}, waviness: { min: 1.0, max: 9.0 }, shaderIntensityMul: { min: 0.25, max: 0.2 },
-      cpuDeformBase: { min: 0.02, max: 0.3 }, cpuDeformVar: { min: 0.02, max: 0.3 },
-
-      noiseAmp:   { min: 0.20, max: 0.5 },
-      ridge:      { min: 0.20, max: 0.60 },
-      warp:       { min: 0.25, max: 0.55 },
-      warpScale:  { min: 0.9,  max: 2.2 },
-      twistAmp:   { min: 0.1, max: 3.0 },
-      twistFreq:  { min: 4.6,  max: 7.2 },
-      pulseFreq:  { min: 1.4,  max: 4.8 },
+      speed: { min: 0.0020, max: 0.0030 }, complexity: { min: 2, max: 2.5 }, scale: { min: 1.0, max: 1.2 },
+      particles: { min: 1600, max: 2400 }, noiseScale: { min: 1.0, max: 3.0 }, noiseSpeed: { min: 1.8, max: 2.0 },
+      sharpness: { min: 0.4, max: 2.0}, waviness: { min: 1.0, max: 9.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
+      cpuDeformBase: { min: 0.02, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.2 },
+      noiseAmp:   { min: 0.20, max: 0.3 },
+      ridge:      { min: 0.20, max: 2.0 },
+      warp:       { min: 0.25, max: 1.0 },
+      warpScale:  { min: 0.9,  max: 1.2 },
+      twistAmp:   { min: 0.1, max: 1.0 },
+      twistFreq:  { min: 2.6,  max: 3.2 },
+      pulseFreq:  { min: 1.4,  max: 3.0 },
       waveAmp:    { min: 0.06, max: 0.16 },
       waveFreq:   { min: 1.0,  max: 1.2 },
-      shaderNoiseScale: { min: 1.6, max: 7.0 },
-      shaderNoiseSpeed: { min: 1.2, max: 7.0 },
+      shaderNoiseScale: { min: 1.6, max: 2.0 },
+      shaderNoiseSpeed: { min: 1.2, max: 2.0 },
     }
   };
 
@@ -266,8 +257,6 @@ const EmotionalFractals = () => {
       particles: eff('particles', true), noiseScale: eff('noiseScale'), noiseSpeed: eff('noiseSpeed'),
       sharpness: eff('sharpness'), waviness: eff('waviness'), shaderIntensityMul: eff('shaderIntensityMul'),
       cpuDeformBase: eff('cpuDeformBase'), cpuDeformVar: eff('cpuDeformVar'),
-
-      // Neu -> GPU
       noiseAmp: eff('noiseAmp'),
       ridge: eff('ridge'),
       warp: eff('warp'),
@@ -282,7 +271,6 @@ const EmotionalFractals = () => {
     };
   };
 
-  // ===== UI-Farben für Sound-Button =====
   const uiColor = useMemo(() => {
     const c = emotionStates[currentState].color.clone();
     return c;
@@ -319,7 +307,6 @@ const EmotionalFractals = () => {
     renderer.setClearColor(0x000000, 1);
     rendererRef.current = renderer;
 
-    // ====== Vertex-Shader ======
     const vertexShader = `
       varying vec3 vNormal;
       varying vec3 vPosition;
@@ -500,8 +487,6 @@ const EmotionalFractals = () => {
         color: { value: eff0.color.clone() },
         intensity: { value: intensity },
         glowLimiter: { value: 1.0 },
-
-        // neue Uniforms
         uNoiseAmp:      { value: eff0.noiseAmp },
         uRidge:         { value: eff0.ridge },
         uWarp:          { value: eff0.warp },
@@ -527,7 +512,6 @@ const EmotionalFractals = () => {
     scene.add(orb);
     fractalRef.current = orb;
 
-    // Partikel-Textur
     function makeCircleTexture(size = 64) {
       const c = document.createElement('canvas');
       c.width = c.height = size;
@@ -591,7 +575,6 @@ const EmotionalFractals = () => {
     scene.add(particles);
     particlesRef.current = particles;
 
-    // ===== CPU-Noise =====
     const noise3D = (x, y, z) => {
       const p = [x, y, z];
       const floor = (v) => [Math.floor(v[0]), Math.floor(v[1]), Math.floor(v[2])];
@@ -637,7 +620,6 @@ const EmotionalFractals = () => {
       const eff = getEffective(currentState, intensity);
       const time = Date.now() * eff.speed;
 
-      // ===== Orb Update =====
       if (fractalRef.current) {
         const rotationSpeed = 0.8 + (intensity * 0.2);
         fractalRef.current.rotation.x = time * 0.45 * rotationSpeed;
@@ -647,7 +629,6 @@ const EmotionalFractals = () => {
         u.time.value = time;
         u.intensity.value = clamp(intensity * eff.shaderIntensityMul, 0.0, 1.6);
 
-        // Neue GPU-Uniforms
         u.uNoiseAmp.value   = eff.noiseAmp;
         u.uRidge.value      = eff.ridge;
         u.uWarp.value       = eff.warp;
@@ -662,11 +643,10 @@ const EmotionalFractals = () => {
 
         let limiter = 1.0;
         if ((currentState === 'clarity' || currentState === 'chaos') && intensity > 0.5) {
-          limiter = 1.0 - (intensity - 0.5) * 0.4; // 1.0 -> 0.8
+          limiter = 1.0 - (intensity - 0.5) * 0.4;
         }
         u.glowLimiter.value = clamp(limiter, 0.8, 1.0);
 
-        // CPU-Deform
         const geometry = fractalRef.current.geometry;
         const positions = geometry.attributes.position.array;
         const originalPos = geometry.userData.originalPositions;
@@ -718,7 +698,6 @@ const EmotionalFractals = () => {
         fractalRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.12);
       }
 
-      // ===== Partikel =====
       if (particlesRef.current) {
         const desired = getEffective(currentState, intensity).particles;
 
@@ -747,7 +726,6 @@ const EmotionalFractals = () => {
         particlesRef.current.geometry.attributes.position.needsUpdate = true;
       }
 
-      // ===== Kamera =====
       const cam = cameraRef.current;
       const floatZ = 0.06 * Math.sin(time * 0.4);
       cam.position.x += (mouseRef.current.x * 0.5 - cam.position.x) * 0.05;
@@ -780,15 +758,12 @@ const EmotionalFractals = () => {
     };
   }, [currentState, intensity]);
 
-  // Farb-Lerp + Partikel-Rebuild beim Emotionswechsel
   useEffect(() => {
     if (!fractalRef.current || !sceneRef.current) return;
     const eff = getEffective(currentState, intensity);
 
-    // Shader-Farbe weich anfahren
     fractalRef.current.material.uniforms.color.value.lerp(eff.color, 0.2);
 
-    // Neue GPU-Uniforms sofort setzen
     const u = fractalRef.current.material.uniforms;
     u.uNoiseAmp.value   = eff.noiseAmp;
     u.uRidge.value      = eff.ridge;
@@ -802,7 +777,6 @@ const EmotionalFractals = () => {
     u.uNoiseScale.value = eff.shaderNoiseScale;
     u.uNoiseSpeed.value = eff.shaderNoiseSpeed;
 
-    // Partikel erneuern (Farben pro Emotion)
     if (particlesRef.current) {
       sceneRef.current.remove(particlesRef.current);
       particlesRef.current.geometry.dispose();
@@ -991,7 +965,7 @@ const EmotionalFractals = () => {
               </div>
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif', color: 'white" }}>
+                <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
                   <span className="font-semibold">Select emotions</span> on the left to experience different states, each with unique visual and sonic properties.
                 </p>
               </div>
@@ -1000,7 +974,6 @@ const EmotionalFractals = () => {
         </div>
       )}
 
-      {/* Mobile: Slider + Sound */}
       <style>{`
         .ef-range {
           -webkit-appearance: none;
@@ -1031,11 +1004,20 @@ const EmotionalFractals = () => {
           box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
           cursor: pointer;
         }
+        @keyframes subtitleFadeIn {
+          0% {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          100% {
+            opacity: 0.8;
+            transform: translateY(0);
+          }
+        }
       `}</style>
 
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center pointer-events-auto px-4">
-          {/* Titel: auf Mobile kleiner (text-5xl), ab md wie gehabt (text-7xl) */}
           <h1
             className="font-light tracking-wider mb-1 transition-all duration-1000 text-5xl md:text-7xl"
             style={{
@@ -1053,20 +1035,20 @@ const EmotionalFractals = () => {
             {emotionStates[currentState].title}
           </h1>
 
-          {/* Subtitle: auf Mobile deutlich kleiner (text-xs), ab md wie gehabt */}
           <p
+            key={currentState}
             className="font-bold uppercase opacity-80 mx-auto text-xs md:text-xl tracking-[0.2em] md:tracking-widest"
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
               color: '#ffffff',
-              maxWidth: 'min(90vw, 38rem)'
+              maxWidth: 'min(90vw, 38rem)',
+              animation: 'subtitleFadeIn 0.8s ease-out forwards'
             }}
           >
             {emotionStates[currentState].subtitle}
           </p>
         </div>
 
-        {/* Emotions-Buttons links: auf Mobile minimal kleiner */}
         <div className="absolute top-1/2 left-6 md:left-8 -translate-y-1/2 pointer-events-auto">
           <div className="p-1.5 md:p-2">
             <div className="flex flex-col gap-3 md:gap-4">
@@ -1143,7 +1125,6 @@ const EmotionalFractals = () => {
               />
             </div>
 
-            {/* Mobile Sound Button */}
             <button
               onClick={toggleSound}
               className="md:hidden flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
@@ -1163,7 +1144,6 @@ const EmotionalFractals = () => {
         </div>
       </div>
 
-      {/* Desktop Sound Button */}
       <button
         onClick={toggleSound}
         className="fixed bottom-8 right-8 z-40 w-14 h-14 rounded-full md:flex items-center justify-center transition-all duration-300 hover:scale-110 hidden"
