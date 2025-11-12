@@ -227,7 +227,7 @@ const EmotionalFractals = () => {
     },
     chaos: {
       color: new THREE.Color(0.80, 0.50, 0.90), title: 'Chaos', subtitle: 'beautiful disorder',
-      speed: { min: 0.0020, max: 0.0027 }, complexity: { min: 2.0, max: 2.5 }, scale: { min: 1.0, max: 1.3 },
+      speed: { min: 0.0020, max: 0.0027 }, complexity: { min: 2.0, max: 2.5 }, scale: { min: 0.9, max: 1.3 },
       particles: { min: 1600, max: 2400 }, noiseScale: { min: 2.0, max: 3.0 }, noiseSpeed: { min: 1.5, max: 1.8 },
       sharpness: { min: 0.4, max: 1.0}, waviness: { min: 5.0, max: 9.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.02, max: 0.1 }, cpuDeformVar: { min: 0.1, max: 0.1 },
