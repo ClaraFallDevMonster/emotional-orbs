@@ -55,7 +55,6 @@ const EmotionalFractals = () => {
     chaos:   { frequency: 666, detune: 50, filterFreq: 1500, volume: 0.22 }
   };
 
-  // Detect mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -201,31 +200,31 @@ const EmotionalFractals = () => {
       shaderNoiseScale: { min: 1.0, max: 1.4 },
       shaderNoiseSpeed: { min: 0.3, max: 0.6 },
     },
-tension: {
-  color: new THREE.Color(0.95, 0.30, 0.40), title: 'Tension', subtitle: 'energy compressed',
-  speed: { min: 0.0015, max: 0.0028 }, 
-  complexity: { min: 3.0, max: 4.5 }, 
-  scale: { min: 1.0, max: 1.2 },
-  particles: { min: 900, max: 1500 }, 
-  noiseScale: { min: 2.0, max: 3.0 }, 
-  noiseSpeed: { min: 1.2, max: 1.6 },
-  sharpness: { min: 0.3, max: 0.6 }, 
-  waviness: { min: 1.5, max: 3.5 }, 
-  shaderIntensityMul: { min: 0.28, max: 0.38 },
-  cpuDeformBase: { min: 0.12, max: 0.15 }, 
-  cpuDeformVar: { min: 0.08, max: 0.12 },
-  noiseAmp:   { min: 0.04, max: 0.12 },
-  ridge:      { min: 0.15, max: 0.25 },
-  warp:       { min: 0.6, max: 1.2 },
-  warpScale:  { min: 1.2,  max: 1.8 },
-  twistAmp:   { min: 0.08, max: 0.16 },
-  twistFreq:  { min: 2.2,  max: 3.2 },
-  pulseFreq:  { min: 2.5,  max: 4.5 },
-  waveAmp:    { min: 0.08, max: 0.18 },
-  waveFreq:   { min: 2.4,  max: 3.6 },
-  shaderNoiseScale: { min: 1.6, max: 2.2 },
-  shaderNoiseSpeed: { min: 1.0, max: 1.6 },
-},
+    tension: {
+      color: new THREE.Color(0.95, 0.30, 0.40), title: 'Tension', subtitle: 'energy compressed',
+      speed: { min: 0.0015, max: 0.0028 }, 
+      complexity: { min: 3.0, max: 4.5 }, 
+      scale: { min: 1.0, max: 1.2 },
+      particles: { min: 900, max: 1500 }, 
+      noiseScale: { min: 2.0, max: 3.0 }, 
+      noiseSpeed: { min: 1.2, max: 1.6 },
+      sharpness: { min: 0.3, max: 0.6 }, 
+      waviness: { min: 1.5, max: 3.5 }, 
+      shaderIntensityMul: { min: 0.28, max: 0.38 },
+      cpuDeformBase: { min: 0.12, max: 0.15 }, 
+      cpuDeformVar: { min: 0.08, max: 0.12 },
+      noiseAmp:   { min: 0.04, max: 0.12 },
+      ridge:      { min: 0.15, max: 0.25 },
+      warp:       { min: 0.6, max: 1.2 },
+      warpScale:  { min: 1.2,  max: 1.8 },
+      twistAmp:   { min: 0.08, max: 0.16 },
+      twistFreq:  { min: 2.2,  max: 3.2 },
+      pulseFreq:  { min: 2.5,  max: 4.5 },
+      waveAmp:    { min: 0.08, max: 0.18 },
+      waveFreq:   { min: 2.4,  max: 3.6 },
+      shaderNoiseScale: { min: 1.6, max: 2.2 },
+      shaderNoiseSpeed: { min: 1.0, max: 1.6 },
+    },
     clarity: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
       speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 4.5 }, scale: { min: 0.55, max: 0.6 },
@@ -714,7 +713,6 @@ tension: {
         geometry.attributes.position.needsUpdate = true;
         geometry.computeVertexNormals();
 
-        // Apply mobile scale multiplier
         const mobileScaleMultiplier = mobileCheck ? 0.65 : 1.0;
         const targetScale = eff.scale * mobileScaleMultiplier;
         fractalRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.12);
@@ -953,8 +951,8 @@ tension: {
                 50% { box-shadow: 0 0 50px rgba(150, 100, 255, 0.7), inset 0 0 50px rgba(150, 100, 255, 0.15); }
               }
               @keyframes pulseGlow {
-                0%, 100% { box-shadow: 0 0 20px rgba(100, 150, 255, 0.4), 0 0 40px rgba(150, 100, 255, 0.2), inset 0 0 20px rgba(100, 150, 255, 0.1); }
-                50% { box-shadow: 0 0 30px rgba(100, 150, 255, 0.6), 0 0 60px rgba(150, 100, 255, 0.3), inset 0 0 30px rgba(150, 100, 255, 0.15); }
+                0%, 100% { box-shadow: 0 0 15px rgba(100, 150, 255, 0.3), 0 0 30px rgba(150, 100, 255, 0.15), inset 0 0 15px rgba(100, 150, 255, 0.08); }
+                50% { box-shadow: 0 0 20px rgba(100, 150, 255, 0.4), 0 0 40px rgba(150, 100, 255, 0.2), inset 0 0 20px rgba(150, 100, 255, 0.1); }
               }
             `}</style>
             <button
@@ -966,13 +964,13 @@ tension: {
               </svg>
             </button>
 
-            <div className="text-center mb-6">
-              <div className="inline-block p-2 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/20 mb-4">
+            <div className="text-center mb-4">
+              <div className="inline-block p-2 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/20 mb-2">
                 <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-light mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+              <h2 className="text-2xl font-light mb-6" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
                 How to Interact
               </h2>
             </div>
@@ -1183,7 +1181,7 @@ tension: {
               </section>
 
               <section className="bg-gradient-to-br from-white/5 to-white/10 border border-white/20 rounded-xl p-6">
-                <div className="grid md:grid-cols-2 gap-4 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
+                <div className="grid md:grid-cols-2 gap-6 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
                   <div>
                     <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Role</p>
                     <p className="opacity-90">Concept, UX/UI Design, WebGL Development, Visual Design</p>
@@ -1192,6 +1190,11 @@ tension: {
                     <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Tech Stack</p>
                     <p className="opacity-90">React, Three.js, GLSL Shaders, Web Audio API</p>
                   </div>
+                </div>
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <p className="text-xs opacity-60 text-center" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
+                    © 2025 Clarissa Bilke 
+                  </p>
                 </div>
               </section>
             </div>
