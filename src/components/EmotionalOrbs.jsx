@@ -8,6 +8,7 @@ const EmotionalFractals = () => {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [showModal, setShowModal] = useState(true);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   const audioContextRef = useRef(null);
@@ -227,10 +228,10 @@ tension: {
 },
     clarity: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
-      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 4.5 }, scale: { min: 0.65, max: 0.7 },
-      particles: { min: 500, max: 900 }, noiseScale: { min: 4.8, max: 6.0 }, noiseSpeed: { min: 0.4, max: 0.7 },
+      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 4.5 }, scale: { min: 0.55, max: 0.6 },
+      particles: { min: 500, max: 900 }, noiseScale: { min: 4.8, max: 7.0 }, noiseSpeed: { min: 0.4, max: 0.7 },
       sharpness: { min: 2.0, max: 5.0 }, waviness: { min: 1.0, max: 3.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
-      cpuDeformBase: { min: 0.05, max: 0.1 }, cpuDeformVar: { min: 0.1, max: 0.1 },
+      cpuDeformBase: { min: 0.05, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.1 },
       noiseAmp:   { min: 0.02, max: 0.07 },
       ridge:      { min: 2.0, max: 2.0 },
       warp:       { min: 0.05, max: 0.15 },
@@ -937,7 +938,7 @@ tension: {
       {showInfoModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowInfoModal(false)}>
           <div
-            className="relative max-w-md w-full rounded-3xl p-8 backdrop-blur-xl"
+            className="relative max-w-md w-full rounded-3xl p-8 backdrop-blur-xl max-h-[90vh] overflow-y-auto"
             style={{
               background: 'rgba(15, 15, 25, 0.85)',
               border: '2px solid transparent',
@@ -951,6 +952,10 @@ tension: {
                 0%, 100% { box-shadow: 0 0 30px rgba(100, 150, 255, 0.5), inset 0 0 30px rgba(100, 150, 255, 0.1); }
                 50% { box-shadow: 0 0 50px rgba(150, 100, 255, 0.7), inset 0 0 50px rgba(150, 100, 255, 0.15); }
               }
+              @keyframes pulseGlow {
+                0%, 100% { box-shadow: 0 0 20px rgba(100, 150, 255, 0.4), 0 0 40px rgba(150, 100, 255, 0.2), inset 0 0 20px rgba(100, 150, 255, 0.1); }
+                50% { box-shadow: 0 0 30px rgba(100, 150, 255, 0.6), 0 0 60px rgba(150, 100, 255, 0.3), inset 0 0 30px rgba(150, 100, 255, 0.15); }
+              }
             `}</style>
             <button
               onClick={() => setShowInfoModal(false)}
@@ -962,8 +967,8 @@ tension: {
             </button>
 
             <div className="text-center mb-6">
-              <div className="inline-block p-3 rounded-full bg-white/10 mb-4">
-                <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="inline-block p-2 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/20 mb-4">
+                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -972,7 +977,7 @@ tension: {
               </h2>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 mb-6">
               <div className="p-4 rounded-xl bg-white/5 border border-white/10">
                 <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
                   <span className="font-semibold">Move your cursor</span> to shift the camera perspective and explore the fractal from different angles.
@@ -991,6 +996,218 @@ tension: {
                 </p>
               </div>
             </div>
+
+            <button
+              onClick={() => {
+                setShowInfoModal(false);
+                setShowAboutModal(true);
+              }}
+              className="w-full py-4 px-6 rounded-xl font-semibold uppercase tracking-widest text-sm transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3"
+              style={{
+                background: 'linear-gradient(135deg, rgba(100, 150, 255, 0.2), rgba(150, 100, 255, 0.2))',
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                color: 'white',
+                fontFamily: "'Space Grotesk', sans-serif",
+                animation: 'pulseGlow 3s ease-in-out infinite',
+              }}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              About This Project
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showAboutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowAboutModal(false)}>
+          <div
+            className="relative max-w-3xl w-full rounded-3xl p-8 md:p-12 backdrop-blur-xl max-h-[90vh] overflow-y-auto"
+            style={{
+              background: 'rgba(15, 15, 25, 0.92)',
+              border: '2px solid transparent',
+              backgroundClip: 'padding-box',
+              animation: 'borderGlow 3s ease-in-out infinite',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowAboutModal(false)}
+              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all z-10"
+            >
+              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="text-center mb-10">
+              <h1 className="text-5xl font-light mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white', letterSpacing: '0.02em' }}>
+                Emotional Orbs
+              </h1>
+              <p className="text-lg opacity-70" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white', letterSpacing: '0.1em' }}>
+                AN INTERACTIVE AUDIO-VISUAL EXPERIENCE
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              <section>
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-6 h-6 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <h2 className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                    The Vision
+                  </h2>
+                </div>
+                <p className="text-base leading-relaxed opacity-90 mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  Emotional Fractals is an experimental web experience that translates internal emotional states into dynamic, generative 3D art. This project explores the intersection of somatic design, data visualization, and interactive media — questioning how digital interfaces can reflect and respond to human emotion in real-time.
+                </p>
+              </section>
+
+              <section>
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-6 h-6 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  <h2 className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                    Concept & Intention
+                  </h2>
+                </div>
+                <p className="text-base leading-relaxed opacity-90 mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  We experience emotions not as static labels, but as fluid, shifting states of being. This project challenges the traditional notion of UI as purely functional, instead treating it as a meta-interface — where visual patterns themselves become the language of interaction.
+                </p>
+                <p className="text-sm leading-relaxed opacity-80 mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  Each emotional state (Calm, Tension, Clarity, Chaos) is represented through:
+                </p>
+                <ul className="space-y-2 mb-4">
+                  <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
+                    <span className="text-blue-300 flex-shrink-0">●</span>
+                    <span className="text-sm opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                      Generative 3D fractals that deform and pulse in real-time
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
+                    <span className="text-purple-300 flex-shrink-0">●</span>
+                    <span className="text-sm opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                      Emotion-specific soundscapes where sound and visuals are tightly coupled
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
+                    <span className="text-pink-300 flex-shrink-0">●</span>
+                    <span className="text-sm opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                      Intensity control that lets users modulate both visual complexity and sonic depth
+                    </span>
+                  </li>
+                </ul>
+                <p className="text-base leading-relaxed opacity-90 italic" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  The result is a meditative tool, a visual instrument, and a design study — all at once.
+                </p>
+              </section>
+
+              <section>
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-6 h-6 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                  <h2 className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                    Technical Approach
+                  </h2>
+                </div>
+                <p className="text-base leading-relaxed opacity-90 mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  Built with Three.js, WebGL shaders, and Web Audio API, the experience runs entirely in the browser. Each emotion has unique algorithmic behaviors:
+                </p>
+                <div className="grid md:grid-cols-2 gap-3 mb-4">
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-300/20">
+                    <h3 className="font-semibold mb-2 text-blue-200" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Calm</h3>
+                    <p className="text-sm opacity-80" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                      Smooth, liquid deformations with low-frequency noise
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-300/20">
+                    <h3 className="font-semibold mb-2 text-red-200" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Tension</h3>
+                    <p className="text-sm opacity-80" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                      Sharp, nervous pulsations with high-contrast spikes
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-white/10 to-gray-200/10 border border-white/20">
+                    <h3 className="font-semibold mb-2 text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Clarity</h3>
+                    <p className="text-sm opacity-80" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                      Crystalline, geometric patterns with faceted surfaces
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-300/20">
+                    <h3 className="font-semibold mb-2 text-pink-200" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Chaos</h3>
+                    <p className="text-sm opacity-80" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                      Multi-directional noise layers creating unpredictable movement
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed opacity-80" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  The intensity slider acts as a unified control parameter, simultaneously affecting fractal deformation amplitude, animation speed, particle density and glow, and audio track intensity (volume, filter cutoff, reverb).
+                </p>
+              </section>
+
+              <section className="border-t border-white/10 pt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-6 h-6 text-pink-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                  <h2 className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                    Why This Matters
+                  </h2>
+                </div>
+                <p className="text-base leading-relaxed opacity-90 mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  In an era of flat, grid-based interfaces, Emotional Fractals asks: <span className="italic font-semibold">What if our digital tools could breathe with us?</span> This project is both a UX experiment and a creative statement — demonstrating how generative systems can create deeply personal, responsive experiences.
+                </p>
+                <p className="text-sm leading-relaxed opacity-80 mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  For brands and studios interested in pushing the boundaries of digital storytelling, experiential design, or music visualization, this project showcases:
+                </p>
+                <div className="grid md:grid-cols-2 gap-2 mb-6">
+                  {[
+                    'Advanced WebGL shader programming',
+                    'Real-time generative art systems',
+                    'Audio-reactive design',
+                    'Emotional design principles applied to interaction'
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-white/5">
+                      <svg className="w-4 h-4 text-green-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-sm opacity-90" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="bg-gradient-to-br from-white/5 to-white/10 border border-white/20 rounded-xl p-6">
+                <div className="grid md:grid-cols-2 gap-4 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
+                  <div>
+                    <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Role</p>
+                    <p className="opacity-90">Concept, UX/UI Design, WebGL Development, Visual Design</p>
+                  </div>
+                  <div>
+                    <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Tech Stack</p>
+                    <p className="opacity-90">React, Three.js, GLSL Shaders, Web Audio API</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <button
+              onClick={() => setShowAboutModal(false)}
+              className="mt-8 w-full py-3 px-6 rounded-xl font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                fontFamily: "'Space Grotesk', sans-serif",
+              }}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
