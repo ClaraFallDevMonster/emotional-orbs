@@ -29,9 +29,9 @@ const EmotionalFractals = () => {
 
   const particleColors = {
     calm:    { a: new THREE.Color('#9fdcff'), b: new THREE.Color('#c4ffe7') },
-    tension: { a: new THREE.Color('#ff6868'), b: new THREE.Color('#ffb3a1') },
+    tension: { a: new THREE.Color('#ff6868'), b: new THREE.Color('#fff0e2') },
     clarity: { a: new THREE.Color('#ffffff'), b: new THREE.Color('#cbd7ff') },
-    chaos:   { a: new THREE.Color('#ff6fff'), b: new THREE.Color('#ad93ff') }
+    chaos:   { a: new THREE.Color('#ff6fff'), b: new THREE.Color('#ffdcfa') }
   };
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -209,12 +209,12 @@ const EmotionalFractals = () => {
     },
     clarity: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
-      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 5.0 }, scale: { min: 0.65, max: 0.67 },
-      particles: { min: 500, max: 900 }, noiseScale: { min: 2.8, max: 5.5 }, noiseSpeed: { min: 0.4, max: 0.7 },
-      sharpness: { min: 3.0, max: 5.0 }, waviness: { min: 0.1, max: 0.2 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
-      cpuDeformBase: { min: 0.05, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.1 },
-      noiseAmp:   { min: 0.08, max: 0.10 },
-      ridge:      { min: 2.0, max: 5.0 },
+      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 4.5 }, scale: { min: 0.65, max: 0.7 },
+      particles: { min: 500, max: 900 }, noiseScale: { min: 4.8, max: 6.0 }, noiseSpeed: { min: 0.4, max: 0.7 },
+      sharpness: { min: 2.0, max: 5.0 }, waviness: { min: 0.1, max: 0.2 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
+      cpuDeformBase: { min: 0.05, max: 0.1 }, cpuDeformVar: { min: 0.1, max: 0.1 },
+      noiseAmp:   { min: 0.02, max: 0.07 },
+      ridge:      { min: 2.0, max: 2.0 },
       warp:       { min: 0.05, max: 0.15 },
       warpScale:  { min: 1.4,  max: 2.2 },
       twistAmp:   { min: 0.02, max: 0.06 },
@@ -227,21 +227,21 @@ const EmotionalFractals = () => {
     },
     chaos: {
       color: new THREE.Color(0.80, 0.50, 0.90), title: 'Chaos', subtitle: 'beautiful disorder',
-      speed: { min: 0.0020, max: 0.0030 }, complexity: { min: 2, max: 3.5 }, scale: { min: 1.0, max: 1.3 },
-      particles: { min: 1600, max: 2400 }, noiseScale: { min: 1.0, max: 4.0 }, noiseSpeed: { min: 1.5, max: 1.8 },
-      sharpness: { min: 0.4, max: 1.0}, waviness: { min: 1.0, max: 9.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
+      speed: { min: 0.0020, max: 0.0027 }, complexity: { min: 2.0, max: 2.5 }, scale: { min: 1.0, max: 1.3 },
+      particles: { min: 1600, max: 2400 }, noiseScale: { min: 2.0, max: 3.0 }, noiseSpeed: { min: 1.5, max: 1.8 },
+      sharpness: { min: 0.4, max: 1.0}, waviness: { min: 5.0, max: 9.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.02, max: 0.1 }, cpuDeformVar: { min: 0.1, max: 0.1 },
       noiseAmp:   { min: 0.20, max: 0.3 },
-      ridge:      { min: 0.20, max: 2.0 },
+      ridge:      { min: 1.0, max: 2.0 },
       warp:       { min: 0.25, max: 1.0 },
       warpScale:  { min: 0.9,  max: 1.2 },
       twistAmp:   { min: 0.1, max: 1.0 },
       twistFreq:  { min: 2.6,  max: 3.2 },
-      pulseFreq:  { min: 1.4,  max: 3.0 },
+      pulseFreq:  { min: 1.8,  max: 3.0 },
       waveAmp:    { min: 0.06, max: 0.16 },
       waveFreq:   { min: 1.0,  max: 1.2 },
       shaderNoiseScale: { min: 1.6, max: 2.0 },
-      shaderNoiseSpeed: { min: 1.2, max: 1.5 },
+      shaderNoiseSpeed: { min: 1.2, max: 2.0 },
     }
   };
 
@@ -1014,6 +1014,15 @@ const EmotionalFractals = () => {
             transform: translateY(0);
           }
         }
+        .subtitle-text {
+          visibility: hidden;
+          animation: subtitleReveal 0.01s 0.15s forwards, subtitleFadeIn 0.8s 0.15s ease-out forwards;
+        }
+        @keyframes subtitleReveal {
+          to {
+            visibility: visible;
+          }
+        }
       `}</style>
 
       <div className="absolute inset-0 pointer-events-none">
@@ -1037,12 +1046,10 @@ const EmotionalFractals = () => {
 
           <p
             key={currentState}
-            className="font-bold uppercase opacity-80 mx-auto text-xs md:text-xl tracking-[0.2em] md:tracking-widest"
+            className="subtitle-text font-bold uppercase opacity-80 mx-auto text-xs md:text-xl tracking-[0.2em] md:tracking-widest whitespace-nowrap"
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
               color: '#ffffff',
-              maxWidth: 'min(90vw, 38rem)',
-              animation: 'subtitleFadeIn 0.8s ease-out forwards'
             }}
           >
             {emotionStates[currentState].subtitle}
