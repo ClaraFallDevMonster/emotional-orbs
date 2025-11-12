@@ -229,7 +229,7 @@ tension: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
       speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.5, max: 4.5 }, scale: { min: 0.65, max: 0.7 },
       particles: { min: 500, max: 900 }, noiseScale: { min: 4.8, max: 6.0 }, noiseSpeed: { min: 0.4, max: 0.7 },
-      sharpness: { min: 2.0, max: 5.0 }, waviness: { min: 0.1, max: 0.2 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
+      sharpness: { min: 2.0, max: 5.0 }, waviness: { min: 1.0, max: 3.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.1 }, cpuDeformVar: { min: 0.1, max: 0.1 },
       noiseAmp:   { min: 0.02, max: 0.07 },
       ridge:      { min: 2.0, max: 2.0 },
