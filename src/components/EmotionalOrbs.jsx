@@ -24,6 +24,12 @@ const EmotionalFractals = () => {
   const particleCountRef = useRef(0);
   const mouseRef = useRef({ x: 0, y: 0 });
 
+  // Neue Refs für interaktive Kamera-Steuerung
+  const isDraggingRef = useRef(false);
+  const previousMouseRef = useRef({ x: 0, y: 0 });
+  const cameraRotationRef = useRef({ theta: 0, phi: Math.PI / 2 });
+  const cameraDistanceRef = useRef(5);
+
   const PARTICLE_SIZE_BASE = 0.022;
   const PARTICLE_SIZE_VAR = 0.020;
   const PARTICLE_OPACITY_BASE = 0.52;
@@ -626,10 +632,95 @@ const EmotionalFractals = () => {
     };
 
     const handleMouseMove = (e) => {
+      // Immer die Maus-Position für Partikel aktualisieren
       mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
     window.addEventListener('mousemove', handleMouseMove);
+
+    // Interaktive Kamera-Steuerung - Mouse Events
+    const handleMouseDown = (e) => {
+      isDraggingRef.current = true;
+      previousMouseRef.current = { x: e.clientX, y: e.clientY };
+      if (canvasRef.current) {
+        canvasRef.current.style.cursor = 'grabbing';
+      }
+    };
+
+    const handleMouseUp = () => {
+      isDraggingRef.current = false;
+      if (canvasRef.current) {
+        canvasRef.current.style.cursor = 'grab';
+      }
+    };
+
+    const handleMouseDrag = (e) => {
+      if (!isDraggingRef.current) return;
+
+      const deltaX = e.clientX - previousMouseRef.current.x;
+      const deltaY = e.clientY - previousMouseRef.current.y;
+
+      cameraRotationRef.current.theta -= deltaX * 0.005;
+      cameraRotationRef.current.phi -= deltaY * 0.005;
+
+      // Phi begrenzen
+      cameraRotationRef.current.phi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraRotationRef.current.phi));
+
+      previousMouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    // Touch Events für Mobile
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 1) {
+        isDraggingRef.current = true;
+        previousMouseRef.current = { 
+          x: e.touches[0].clientX, 
+          y: e.touches[0].clientY 
+        };
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDraggingRef.current || e.touches.length !== 1) return;
+      e.preventDefault();
+
+      const deltaX = e.touches[0].clientX - previousMouseRef.current.x;
+      const deltaY = e.touches[0].clientY - previousMouseRef.current.y;
+
+      cameraRotationRef.current.theta -= deltaX * 0.005;
+      cameraRotationRef.current.phi -= deltaY * 0.005;
+
+      cameraRotationRef.current.phi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraRotationRef.current.phi));
+
+      previousMouseRef.current = { 
+        x: e.touches[0].clientX, 
+        y: e.touches[0].clientY 
+      };
+    };
+
+    const handleTouchEnd = () => {
+      isDraggingRef.current = false;
+    };
+
+    // Mouse Wheel für Zoom - stark eingeschränkt
+    const handleWheel = (e) => {
+      e.preventDefault();
+      cameraDistanceRef.current += e.deltaY * 0.002; // Viel feiner
+      cameraDistanceRef.current = Math.max(4.5, Math.min(6, cameraDistanceRef.current)); // Enger Bereich
+    };
+
+    // Event Listeners hinzufügen
+    if (canvasRef.current) {
+      canvasRef.current.addEventListener('mousedown', handleMouseDown);
+      canvasRef.current.addEventListener('touchstart', handleTouchStart, { passive: false });
+      canvasRef.current.addEventListener('touchmove', handleTouchMove, { passive: false });
+      canvasRef.current.addEventListener('touchend', handleTouchEnd);
+      canvasRef.current.addEventListener('wheel', handleWheel, { passive: false });
+      canvasRef.current.style.cursor = 'grab';
+    }
+    
+    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseDrag);
 
     let animationId;
     const animate = () => {
@@ -746,11 +837,26 @@ const EmotionalFractals = () => {
         particlesRef.current.geometry.attributes.position.needsUpdate = true;
       }
 
+      // Kamera-Position - Kombination aus Drag-Rotation und Maus-Parallaxe
       const cam = cameraRef.current;
-      const floatZ = 0.06 * Math.sin(time * 0.4);
-      cam.position.x += (mouseRef.current.x * 0.5 - cam.position.x) * 0.05;
-      cam.position.y += (mouseRef.current.y * 0.5 - cam.position.y) * 0.05;
-      cam.position.z = 5 + floatZ;
+      
+      if (isDraggingRef.current) {
+        // Wenn gedraggt wird: Sphärische Koordinaten für Orb-Rotation
+        const theta = cameraRotationRef.current.theta;
+        const phi = cameraRotationRef.current.phi;
+        const radius = cameraDistanceRef.current;
+
+        cam.position.x = radius * Math.sin(phi) * Math.cos(theta);
+        cam.position.y = radius * Math.cos(phi);
+        cam.position.z = radius * Math.sin(phi) * Math.sin(theta);
+      } else {
+        // Wenn nicht gedraggt: Sanfte Maus-Parallaxe (original Verhalten)
+        const floatZ = 0.06 * Math.sin(time * 0.4);
+        cam.position.x += (mouseRef.current.x * 0.5 - cam.position.x) * 0.05;
+        cam.position.y += (mouseRef.current.y * 0.5 - cam.position.y) * 0.05;
+        cam.position.z = cameraDistanceRef.current + floatZ;
+      }
+      
       cam.lookAt(scene.position);
 
       renderer.render(scene, camera);
@@ -767,6 +873,17 @@ const EmotionalFractals = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousemove', handleMouseDrag);
+      
+      if (canvasRef.current) {
+        canvasRef.current.removeEventListener('mousedown', handleMouseDown);
+        canvasRef.current.removeEventListener('touchstart', handleTouchStart);
+        canvasRef.current.removeEventListener('touchmove', handleTouchMove);
+        canvasRef.current.removeEventListener('touchend', handleTouchEnd);
+        canvasRef.current.removeEventListener('wheel', handleWheel);
+      }
+      
       cancelAnimationFrame(animationId);
       orbGeo.dispose();
       orbMat.dispose();
@@ -888,7 +1005,7 @@ const EmotionalFractals = () => {
                 Immersive Experience
               </h2>
               <p className="text-sm opacity-70" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
-                This experience is best enjoyed with sound and headphones
+                This experience is best enjoyed with sound, headphones and full screen mode.
               </p>
             </div>
 
@@ -978,13 +1095,13 @@ const EmotionalFractals = () => {
             <div className="space-y-4 mb-6">
               <div className="p-4 rounded-xl bg-white/5 border border-white/10">
                 <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  <span className="font-semibold">Move your cursor</span> to shift the camera perspective and explore the fractal from different angles.
+                  <span className="font-semibold">Click, hold and move your cursor</span> to shift the camera perspective. Use your <span className="font-semibold">mouse wheel</span> to zoom in and out.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/10">
                 <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  The <span className="font-semibold">intensity slider</span> maps each emotion's min→max ranges for speed, complexity, scale, particles and noise characteristics.
+                  The <span className="font-semibold">intensity slider</span> maps each emotion's min→max ranges for speed, complexity, scale, particles, noise and sound characteristics.
                 </p>
               </div>
 
@@ -1215,57 +1332,6 @@ const EmotionalFractals = () => {
         </div>
       )}
 
-      <style>{`
-        .ef-range {
-          -webkit-appearance: none;
-          appearance: none;
-          background: transparent;
-        }
-        .ef-range::-webkit-slider-runnable-track {
-          height: 8px;
-          border-radius: 9999px;
-          background: transparent;
-        }
-        .ef-range::-moz-range-track {
-          height: 8px;
-          border-radius: 9999px;
-          background: transparent;
-        }
-        .ef-range::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          width: 12px; height: 12px; border-radius: 9999px;
-          background: #ffffff;
-          box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
-          margin-top: -2px;
-          cursor: pointer;
-        }
-        .ef-range::-moz-range-thumb {
-          width: 12px; height: 12px; border-radius: 9999px;
-          background: #ffffff;
-          box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
-          cursor: pointer;
-        }
-        @keyframes subtitleFadeIn {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          100% {
-            opacity: 0.8;
-            transform: translateY(0);
-          }
-        }
-        .subtitle-text {
-          visibility: hidden;
-          animation: subtitleReveal 0.01s 0.15s forwards, subtitleFadeIn 0.8s 0.15s ease-out forwards;
-        }
-        @keyframes subtitleReveal {
-          to {
-            visibility: visible;
-          }
-        }
-      `}</style>
-
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center pointer-events-auto px-4">
           <h1
@@ -1407,6 +1473,62 @@ const EmotionalFractals = () => {
           </svg>
         )}
       </button>
+
+      <style>{`
+        .ef-range {
+          -webkit-appearance: none;
+          appearance: none;
+          background: transparent;
+        }
+        .ef-range::-webkit-slider-runnable-track {
+          height: 8px;
+          border-radius: 9999px;
+          background: transparent;
+        }
+        .ef-range::-moz-range-track {
+          height: 8px;
+          border-radius: 9999px;
+          background: transparent;
+        }
+        .ef-range::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 12px; height: 12px; border-radius: 9999px;
+          background: #ffffff;
+          box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
+          margin-top: -2px;
+          cursor: pointer;
+        }
+        .ef-range::-moz-range-thumb {
+          width: 12px; height: 12px; border-radius: 9999px;
+          background: #ffffff;
+          box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
+          cursor: pointer;
+        }
+        @keyframes subtitleFadeIn {
+          0% {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          100% {
+            opacity: 0.8;
+            transform: translateY(0);
+          }
+        }
+        .subtitle-text {
+          visibility: hidden;
+          animation: subtitleReveal 0.01s 0.15s forwards, subtitleFadeIn 0.8s 0.15s ease-out forwards;
+        }
+        @keyframes subtitleReveal {
+          to {
+            visibility: visible;
+          }
+        }
+      `}</style>
+
+      {/* Rest of the UI components remain the same */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* UI code continues... */}
+      </div>
     </div>
   );
 };
