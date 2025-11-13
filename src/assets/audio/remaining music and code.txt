@@ -1,0 +1,31 @@
+oben:
+
+// TENSION
+import tensionBase from "../assets/audio/011_tension.mp3";
+import tensionLayer from "../assets/audio/012_tension.mp3";
+
+// CLARITY
+import clarityBase from "../assets/audio/011_clarity.mp3";
+import clarityLayer from "../assets/audio/012_clarity.mp3";
+
+// CHAOS
+import chaosBase from "../assets/audio/011_chaos.mp3";
+import chaosLayer from "../assets/audio/012_chaos.mp3";
+
+weiter unten:
+
+
+  tension: {
+    base: tensionBase,
+    layer: tensionLayer,
+  },
+
+  clarity: {
+    base: clarityBase,
+    layer: clarityLayer,
+  },
+
+  chaos: {
+    base: chaosBase,
+    layer: chaosLayer,
+  },

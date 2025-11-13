@@ -1,19 +1,31 @@
+// BASE DRONE
+import drone000 from "../assets/audio/000_BaseCleanDrone.mp3";
+
+// CALM
+import calmBase from "../assets/audio/011_CalmMain.mp3";
+import calmLayer from "../assets/audio/012_CalmIntensity.mp3";
+
+
+
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 
 const EmotionalOrbs = () => {
   const canvasRef = useRef(null);
   const [currentState, setCurrentState] = useState('calm');
-  const [intensity, setIntensity] = useState(0.5);
+  const [intensity, setIntensity] = useState(0.05);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [showModal, setShowModal] = useState(true);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const audioContextRef = useRef(null);
-  const oscillatorRef = useRef(null);
-  const gainNodeRef = useRef(null);
+  const handleEmotionChange = (state) => {
+    setIntensity(0.05);      // Slider immer auf 5% zurücksetzen
+    setCurrentState(state);  // Emotion wechseln
+  };
+
+  // nur noch ein Ref für HTMLAudio
   const audioElementsRef = useRef({});
 
   const sceneRef = useRef(null);
@@ -36,124 +48,110 @@ const EmotionalOrbs = () => {
   const PARTICLE_OPACITY_VAR = 0.22;
 
   const particleColors = {
-    calm:    { a: new THREE.Color('#9fdcff'), b: new THREE.Color('#c4ffe7') },
+    calm: { a: new THREE.Color('#9fdcff'), b: new THREE.Color('#c4ffe7') },
     tension: { a: new THREE.Color('#ff6868'), b: new THREE.Color('#fff0e2') },
     clarity: { a: new THREE.Color('#ffffff'), b: new THREE.Color('#cbd7ff') },
-    chaos:   { a: new THREE.Color('#ff6fff'), b: new THREE.Color('#ffdcfa') }
+    chaos: { a: new THREE.Color('#ff6fff'), b: new THREE.Color('#ffdcfa') }
   };
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const lerp  = (a, b, t) => a + (b - a) * t;
+  const lerp = (a, b, t) => a + (b - a) * t;
   const toRGB = (c) => `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
-  const toRGBA = (c, a=1) => `rgba(${toRGB(c)}, ${a})`;
+  const toRGBA = (c, a = 1) => `rgba(${toRGB(c)}, ${a})`;
 
-  const emotionAudioFiles = {
-    calm: null,
-    tension: null,
-    clarity: null,
-    chaos: null,
+const audioFiles = {
+  drone: drone000,
+
+  calm: {
+    base: calmBase,
+    layer: calmLayer,
+  },
+};
+
+
+  const DRONE_VOLUME = 0.35;     // konstante Lautstärke
+  const BASE_VOLUME = 0.45;      // konstante Lautstärke für 011_
+  const LAYER_MAX_VOLUME = 0.7;  // maximale Lautstärke für 012_ bei intensity = 1
+
+  // Hilfsfunktionen für Audio
+  const getOrCreateAudio = (key, src) => {
+    if (!src) return null;
+    if (!audioElementsRef.current[key]) {
+      const audio = new Audio(src);
+      audio.loop = true;
+      audio.volume = 0;
+      audioElementsRef.current[key] = audio;
+    }
+    return audioElementsRef.current[key];
   };
 
-  const emotionSounds = {
-    calm:    { frequency: 174, detune: 0,  filterFreq:  800, volume: 0.15 },
-    tension: { frequency: 440, detune: 20, filterFreq: 2000, volume: 0.20 },
-    clarity: { frequency: 528, detune: 0,  filterFreq: 4000, volume: 0.18 },
-    chaos:   { frequency: 666, detune: 50, filterFreq: 1500, volume: 0.22 }
+  const fadeToVolume = (audio, target, durationMs = 400) => {
+    if (!audio) return;
+    const steps = 20;
+    const stepTime = durationMs / steps;
+    const delta = (target - audio.volume) / steps;
+    let currentStep = 0;
+    const id = setInterval(() => {
+      currentStep += 1;
+      const next = audio.volume + delta;
+      audio.volume = clamp(next, 0, 1);
+      if (currentStep >= steps) {
+        clearInterval(id);
+        audio.volume = clamp(target, 0, 1);
+        if (audio.volume === 0) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      }
+    }, stepTime);
   };
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const startDroneIfNeeded = () => {
+    const drone = getOrCreateAudio('drone', audioFiles.drone);
+    if (drone && drone.paused) {
+      drone.play().catch(() => {});
+      fadeToVolume(drone, DRONE_VOLUME, 600);
+    }
+  };
 
-  const initSound = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+  const updateEmotionTracks = () => {
+    const emotions = ['calm', 'tension', 'clarity', 'chaos'];
+
+    // alle anderen Emotionen ausfaden
+    emotions.forEach((emotion) => {
+      if (emotion === currentState) return;
+      ['base', 'layer'].forEach((layer) => {
+        const key = `${emotion}_${layer}`;
+        const a = audioElementsRef.current[key];
+        if (a) fadeToVolume(a, 0, 350);
+      });
+    });
+
+    const conf = audioFiles[currentState] || {};
+    const baseAudio = getOrCreateAudio(`${currentState}_base`, conf.base);
+    const layerAudio = getOrCreateAudio(`${currentState}_layer`, conf.layer);
+
+    if (baseAudio) {
+      if (baseAudio.paused) baseAudio.play().catch(() => {});
+      fadeToVolume(baseAudio, BASE_VOLUME, 500);
+    }
+
+    if (layerAudio) {
+      if (layerAudio.paused) layerAudio.play().catch(() => {});
+      const targetLayerVol = LAYER_MAX_VOLUME * intensity;
+      fadeToVolume(layerAudio, targetLayerVol, 500);
     }
   };
 
   const startSound = () => {
-    const audioFile = emotionAudioFiles[currentState];
-    if (audioFile) {
-      Object.values(audioElementsRef.current).forEach(audio => {
-        if (audio) { audio.pause(); audio.currentTime = 0; }
-      });
-      if (!audioElementsRef.current[currentState]) {
-        const audio = new Audio(audioFile);
-        audio.loop = true;
-        audio.volume = 0;
-        audioElementsRef.current[currentState] = audio;
-      }
-      const audio = audioElementsRef.current[currentState];
-      audio.volume = 0;
-      audio.play().catch(e => console.log('Audio play failed:', e));
-      let vol = 0;
-      const fadeIn = setInterval(() => {
-        vol += 0.02;
-        if (vol >= intensity * 0.5) {
-          clearInterval(fadeIn);
-          audio.volume = intensity * 0.5;
-        } else {
-          audio.volume = vol;
-        }
-      }, 50);
-      return;
-    }
-
-    initSound();
-    const ctx = audioContextRef.current;
-    if (oscillatorRef.current) oscillatorRef.current.stop();
-    const config = emotionSounds[currentState];
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(config.frequency, ctx.currentTime);
-    oscillator.detune.setValueAtTime(config.detune, ctx.currentTime);
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(config.filterFreq, ctx.currentTime);
-    filter.Q.setValueAtTime(1, ctx.currentTime);
-    gainNode.gain.setValueAtTime(0, ctx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(config.volume * intensity, ctx.currentTime + 0.5);
-    oscillator.connect(filter);
-    filter.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    oscillator.start();
-    oscillatorRef.current = oscillator;
-    gainNodeRef.current = gainNode;
+    startDroneIfNeeded();
+    updateEmotionTracks();
   };
 
   const stopSound = () => {
-    Object.values(audioElementsRef.current).forEach(audio => {
-      if (audio) {
-        const fadeOut = () => {
-          if (audio.volume > 0.02) {
-            audio.volume -= 0.02;
-            setTimeout(fadeOut, 50);
-          } else {
-            audio.pause();
-            audio.currentTime = 0;
-            audio.volume = 0;
-          }
-        };
-        fadeOut();
-      }
+    Object.values(audioElementsRef.current).forEach((audio) => {
+      if (audio) fadeToVolume(audio, 0, 400);
     });
-
-    if (oscillatorRef.current && gainNodeRef.current) {
-      const ctx = audioContextRef.current;
-      gainNodeRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
-      setTimeout(() => {
-        if (oscillatorRef.current) {
-          oscillatorRef.current.stop();
-          oscillatorRef.current = null;
-        }
-      }, 300);
-    }
   };
 
   const toggleSound = () => {
@@ -167,24 +165,34 @@ const EmotionalOrbs = () => {
   };
 
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 🔁 Emotion gewechselt → nur Emotionstracks neu, Drone bleibt
+  useEffect(() => {
     if (soundEnabled) {
-      stopSound();
-      setTimeout(() => startSound(), 350);
+      updateEmotionTracks();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentState]);
 
+  // 🔁 Intensity geändert → nur der 012_-Layer der aktuellen Emotion wird angepasst
   useEffect(() => {
-    if (soundEnabled && gainNodeRef.current && audioContextRef.current) {
-      const config = emotionSounds[currentState];
-      gainNodeRef.current.gain.linearRampToValueAtTime(
-        config.volume * intensity,
-        audioContextRef.current.currentTime + 0.1
-      );
+    if (!soundEnabled) return;
+    const conf = audioFiles[currentState];
+    if (!conf) return;
+    const layerAudio = getOrCreateAudio(`${currentState}_layer`, conf.layer);
+    if (layerAudio) {
+      const target = LAYER_MAX_VOLUME * intensity;
+      // hier kein großes Fade nötig, damit Slider responsiv bleibt
+      layerAudio.volume = clamp(target, 0, 1);
     }
-    const audio = audioElementsRef.current[currentState];
-    if (audio && soundEnabled) {
-      audio.volume = intensity * 0.5;
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intensity, soundEnabled, currentState]);
 
   const emotionStates = {
@@ -194,40 +202,40 @@ const EmotionalOrbs = () => {
       particles: { min: 600, max: 1000 }, noiseScale: { min: 0.8, max: 1.0 }, noiseSpeed: { min: 0.2, max: 0.4 },
       sharpness: { min: 0.1, max: 0.2 }, waviness: { min: 2.0, max: 2.5 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.055 }, cpuDeformVar: { min: 0.04, max: 0.0 },
-      noiseAmp:   { min: 0, max: 0 },
-      ridge:      { min: 0.00, max: 0.15 },
-      warp:       { min: 0.10, max: 0.25 },
-      warpScale:  { min: 0.60, max: 1.00 },
-      twistAmp:   { min: 0.02, max: 0.08 },
-      twistFreq:  { min: 1.2,  max: 1.6 },
-      pulseFreq:  { min: 0.6,  max: 1.0 },
-      waveAmp:    { min: 0.02, max: 0.07 },
-      waveFreq:   { min: 1.2,  max: 2.0 },
+      noiseAmp: { min: 0, max: 0 },
+      ridge: { min: 0.00, max: 0.15 },
+      warp: { min: 0.10, max: 0.25 },
+      warpScale: { min: 0.60, max: 1.00 },
+      twistAmp: { min: 0.02, max: 0.08 },
+      twistFreq: { min: 1.2, max: 1.6 },
+      pulseFreq: { min: 0.6, max: 1.0 },
+      waveAmp: { min: 0.02, max: 0.07 },
+      waveFreq: { min: 1.2, max: 2.0 },
       shaderNoiseScale: { min: 1.0, max: 1.4 },
       shaderNoiseSpeed: { min: 0.3, max: 0.6 },
     },
     tension: {
       color: new THREE.Color(0.95, 0.30, 0.40), title: 'Tension', subtitle: 'energy compressed',
-      speed: { min: 0.0015, max: 0.0028 }, 
-      complexity: { min: 3.0, max: 4.5 }, 
-      scale: { min: 1.0, max: 1.2 },
-      particles: { min: 900, max: 1500 }, 
-      noiseScale: { min: 2.0, max: 3.0 }, 
+      speed: { min: 0.0015, max: 0.0028 },
+      complexity: { min: 3.0, max: 4.5 },
+      scale: { min: 0.9, max: 1.3 },
+      particles: { min: 900, max: 1500 },
+      noiseScale: { min: 2.0, max: 3.0 },
       noiseSpeed: { min: 1.2, max: 1.6 },
-      sharpness: { min: 0.3, max: 0.6 }, 
-      waviness: { min: 1.5, max: 3.5 }, 
+      sharpness: { min: 0.3, max: 0.6 },
+      waviness: { min: 1.5, max: 3.5 },
       shaderIntensityMul: { min: 0.28, max: 0.38 },
-      cpuDeformBase: { min: 0.12, max: 0.15 }, 
+      cpuDeformBase: { min: 0.12, max: 0.15 },
       cpuDeformVar: { min: 0.08, max: 0.12 },
-      noiseAmp:   { min: 0.04, max: 0.12 },
-      ridge:      { min: 0.15, max: 0.25 },
-      warp:       { min: 0.6, max: 1.2 },
-      warpScale:  { min: 1.2,  max: 1.8 },
-      twistAmp:   { min: 0.08, max: 0.16 },
-      twistFreq:  { min: 2.2,  max: 3.2 },
-      pulseFreq:  { min: 2.5,  max: 4.5 },
-      waveAmp:    { min: 0.08, max: 0.18 },
-      waveFreq:   { min: 2.4,  max: 3.6 },
+      noiseAmp: { min: 0.04, max: 0.12 },
+      ridge: { min: 0.15, max: 0.25 },
+      warp: { min: 0.6, max: 1.2 },
+      warpScale: { min: 1.2, max: 1.8 },
+      twistAmp: { min: 0.08, max: 0.16 },
+      twistFreq: { min: 2.2, max: 3.2 },
+      pulseFreq: { min: 2.5, max: 4.5 },
+      waveAmp: { min: 0.08, max: 0.18 },
+      waveFreq: { min: 2.4, max: 3.6 },
       shaderNoiseScale: { min: 1.6, max: 2.2 },
       shaderNoiseSpeed: { min: 1.0, max: 1.6 },
     },
@@ -237,15 +245,15 @@ const EmotionalOrbs = () => {
       particles: { min: 500, max: 900 }, noiseScale: { min: 4.8, max: 7.0 }, noiseSpeed: { min: 0.4, max: 0.7 },
       sharpness: { min: 2.0, max: 5.0 }, waviness: { min: 1.0, max: 3.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.1 },
-      noiseAmp:   { min: 0.02, max: 0.07 },
-      ridge:      { min: 2.0, max: 2.0 },
-      warp:       { min: 0.05, max: 0.15 },
-      warpScale:  { min: 1.4,  max: 2.2 },
-      twistAmp:   { min: 0.02, max: 0.06 },
-      twistFreq:  { min: 2.4,  max: 3.6 },
-      pulseFreq:  { min: 0.8,  max: 1.4 },
-      waveAmp:    { min: 0.02, max: 0.06 },
-      waveFreq:   { min: 2.6,  max: 4.0 },
+      noiseAmp: { min: 0.02, max: 0.07 },
+      ridge: { min: 2.0, max: 2.0 },
+      warp: { min: 0.05, max: 0.15 },
+      warpScale: { min: 1.4, max: 2.2 },
+      twistAmp: { min: 0.02, max: 0.06 },
+      twistFreq: { min: 2.4, max: 3.6 },
+      pulseFreq: { min: 0.8, max: 1.4 },
+      waveAmp: { min: 0.02, max: 0.06 },
+      waveFreq: { min: 2.6, max: 4.0 },
       shaderNoiseScale: { min: 1.8, max: 2.6 },
       shaderNoiseSpeed: { min: 0.5, max: 0.9 },
     },
@@ -253,17 +261,17 @@ const EmotionalOrbs = () => {
       color: new THREE.Color(0.80, 0.50, 0.90), title: 'Chaos', subtitle: 'beautiful disorder',
       speed: { min: 0.0020, max: 0.0027 }, complexity: { min: 2.0, max: 2.5 }, scale: { min: 0.9, max: 1.3 },
       particles: { min: 1600, max: 2400 }, noiseScale: { min: 2.0, max: 3.0 }, noiseSpeed: { min: 1.5, max: 1.8 },
-      sharpness: { min: 0.4, max: 1.0}, waviness: { min: 5.0, max: 9.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
+      sharpness: { min: 0.4, max: 1.0 }, waviness: { min: 5.0, max: 9.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.02, max: 0.1 }, cpuDeformVar: { min: 0.1, max: 0.1 },
-      noiseAmp:   { min: 0.20, max: 0.3 },
-      ridge:      { min: 1.0, max: 2.0 },
-      warp:       { min: 0.25, max: 1.0 },
-      warpScale:  { min: 0.9,  max: 1.2 },
-      twistAmp:   { min: 0.1, max: 1.0 },
-      twistFreq:  { min: 2.6,  max: 3.2 },
-      pulseFreq:  { min: 1.8,  max: 3.0 },
-      waveAmp:    { min: 0.06, max: 0.16 },
-      waveFreq:   { min: 1.0,  max: 1.2 },
+      noiseAmp: { min: 0.20, max: 0.3 },
+      ridge: { min: 1.0, max: 2.0 },
+      warp: { min: 0.25, max: 1.0 },
+      warpScale: { min: 0.9, max: 1.2 },
+      twistAmp: { min: 0.1, max: 1.0 },
+      twistFreq: { min: 2.6, max: 3.2 },
+      pulseFreq: { min: 1.8, max: 3.0 },
+      waveAmp: { min: 0.06, max: 0.16 },
+      waveFreq: { min: 1.0, max: 1.2 },
       shaderNoiseScale: { min: 1.6, max: 2.0 },
       shaderNoiseSpeed: { min: 1.2, max: 2.0 },
     }
@@ -304,15 +312,15 @@ const EmotionalOrbs = () => {
     const rgb = toRGB(uiColor);
     return soundEnabled
       ? {
-          background: `linear-gradient(135deg, rgba(${rgb}, 0.18), rgba(${rgb}, 0.35))`,
-          border: `2px solid rgba(${rgb}, 0.55)`,
-          boxShadow: `0 0 22px rgba(${rgb}, 0.55), inset 0 0 22px rgba(${rgb}, 0.18)`,
-        }
+        background: `linear-gradient(135deg, rgba(${rgb}, 0.18), rgba(${rgb}, 0.35))`,
+        border: `2px solid rgba(${rgb}, 0.55)`,
+        boxShadow: `0 0 22px rgba(${rgb}, 0.55), inset 0 0 22px rgba(${rgb}, 0.18)`,
+      }
       : {
-          background: 'rgba(255, 255, 255, 0.08)',
-          border: `2px solid rgba(${rgb}, 0.35)`,
-          boxShadow: `0 4px 16px rgba(0,0,0,0.35)`,
-        };
+        background: 'rgba(255, 255, 255, 0.08)',
+        border: `2px solid rgba(${rgb}, 0.35)`,
+        boxShadow: `0 4px 16px rgba(0,0,0,0.35)`,
+      };
   }, [soundEnabled, uiColor]);
 
   useEffect(() => {
@@ -511,17 +519,17 @@ const EmotionalOrbs = () => {
         color: { value: eff0.color.clone() },
         intensity: { value: intensity },
         glowLimiter: { value: 1.0 },
-        uNoiseAmp:      { value: eff0.noiseAmp },
-        uRidge:         { value: eff0.ridge },
-        uWarp:          { value: eff0.warp },
-        uWarpScale:     { value: eff0.warpScale },
-        uTwistAmp:      { value: eff0.twistAmp },
-        uTwistFreq:     { value: eff0.twistFreq },
-        uPulseFreq:     { value: eff0.pulseFreq },
-        uWaveAmp:       { value: eff0.waveAmp },
-        uWaveFreq:      { value: eff0.waveFreq },
-        uNoiseScale:    { value: eff0.shaderNoiseScale },
-        uNoiseSpeed:    { value: eff0.shaderNoiseSpeed },
+        uNoiseAmp: { value: eff0.noiseAmp },
+        uRidge: { value: eff0.ridge },
+        uWarp: { value: eff0.warp },
+        uWarpScale: { value: eff0.warpScale },
+        uTwistAmp: { value: eff0.twistAmp },
+        uTwistFreq: { value: eff0.twistFreq },
+        uPulseFreq: { value: eff0.pulseFreq },
+        uWaveAmp: { value: eff0.waveAmp },
+        uWaveFreq: { value: eff0.waveFreq },
+        uNoiseScale: { value: eff0.shaderNoiseScale },
+        uNoiseSpeed: { value: eff0.shaderNoiseSpeed },
       },
       transparent: true,
       depthWrite: false,
@@ -563,13 +571,13 @@ const EmotionalOrbs = () => {
 
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
-        positions[i3]     = (Math.random() - 0.5) * 10;
+        positions[i3] = (Math.random() - 0.5) * 10;
         positions[i3 + 1] = (Math.random() - 0.5) * 10;
         positions[i3 + 2] = (Math.random() - 0.5) * 10;
 
         const pickA = Math.random() < 0.5;
         const c = pickA ? colorsObj.a : colorsObj.b;
-        colors[i3]     = c.r;
+        colors[i3] = c.r;
         colors[i3 + 1] = c.g;
         colors[i3 + 2] = c.b;
       }
@@ -614,9 +622,9 @@ const EmotionalOrbs = () => {
       return (
         mix(
           mix(mix(hash([i[0], i[1], i[2]]), hash([i[0] + 1, i[1], i[2]]), u[0]),
-              mix(hash([i[0], i[1] + 1, i[2]]), hash([i[0] + 1, i[1] + 1, i[2]]), u[0]), u[1]),
+            mix(hash([i[0], i[1] + 1, i[2]]), hash([i[0] + 1, i[1] + 1, i[2]]), u[0]), u[1]),
           mix(mix(hash([i[0], i[1], i[2] + 1]), hash([i[0] + 1, i[1], i[2] + 1]), u[0]),
-              mix(hash([i[0], i[1] + 1, i[2] + 1]), hash([i[0] + 1, i[1] + 1, i[2] + 1]), u[0]), u[1]), u[2]
+            mix(hash([i[0], i[1] + 1, i[2] + 1]), hash([i[0] + 1, i[1] + 1, i[2] + 1]), u[0]), u[1]), u[2]
         ) * 2 - 1
       );
     };
@@ -673,9 +681,9 @@ const EmotionalOrbs = () => {
     const handleTouchStart = (e) => {
       if (e.touches.length === 1) {
         isDraggingRef.current = true;
-        previousMouseRef.current = { 
-          x: e.touches[0].clientX, 
-          y: e.touches[0].clientY 
+        previousMouseRef.current = {
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY
         };
       }
     };
@@ -692,9 +700,9 @@ const EmotionalOrbs = () => {
 
       cameraRotationRef.current.phi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraRotationRef.current.phi));
 
-      previousMouseRef.current = { 
-        x: e.touches[0].clientX, 
-        y: e.touches[0].clientY 
+      previousMouseRef.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY
       };
     };
 
@@ -702,11 +710,11 @@ const EmotionalOrbs = () => {
       isDraggingRef.current = false;
     };
 
-   
+
     const handleWheel = (e) => {
       e.preventDefault();
       cameraDistanceRef.current += e.deltaY * 0.002;
-      cameraDistanceRef.current = Math.max(4.5, Math.min(6, cameraDistanceRef.current)); 
+      cameraDistanceRef.current = Math.max(4.5, Math.min(6, cameraDistanceRef.current));
     };
 
     // Event Listeners hinzufügen
@@ -718,7 +726,7 @@ const EmotionalOrbs = () => {
       canvasRef.current.addEventListener('wheel', handleWheel, { passive: false });
       canvasRef.current.style.cursor = 'grab';
     }
-    
+
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mousemove', handleMouseDrag);
 
@@ -739,15 +747,15 @@ const EmotionalOrbs = () => {
         u.time.value = time;
         u.intensity.value = clamp(intensity * eff.shaderIntensityMul, 0.0, 1.6);
 
-        u.uNoiseAmp.value   = eff.noiseAmp;
-        u.uRidge.value      = eff.ridge;
-        u.uWarp.value       = eff.warp;
-        u.uWarpScale.value  = eff.warpScale;
-        u.uTwistAmp.value   = eff.twistAmp;
-        u.uTwistFreq.value  = eff.twistFreq;
-        u.uPulseFreq.value  = eff.pulseFreq;
-        u.uWaveAmp.value    = eff.waveAmp;
-        u.uWaveFreq.value   = eff.waveFreq;
+        u.uNoiseAmp.value = eff.noiseAmp;
+        u.uRidge.value = eff.ridge;
+        u.uWarp.value = eff.warp;
+        u.uWarpScale.value = eff.warpScale;
+        u.uTwistAmp.value = eff.twistAmp;
+        u.uTwistFreq.value = eff.twistFreq;
+        u.uPulseFreq.value = eff.pulseFreq;
+        u.uWaveAmp.value = eff.waveAmp;
+        u.uWaveFreq.value = eff.waveFreq;
         u.uNoiseScale.value = eff.shaderNoiseScale;
         u.uNoiseSpeed.value = eff.shaderNoiseSpeed;
 
@@ -797,7 +805,7 @@ const EmotionalOrbs = () => {
             waveAmount;
 
           const displacement = (combinedNoise * baseDeform * pulseFactor + wave) * len;
-          positions[i]     = x + nx * displacement;
+          positions[i] = x + nx * displacement;
           positions[i + 1] = y + ny * displacement;
           positions[i + 2] = z + nz * displacement;
         }
@@ -831,15 +839,15 @@ const EmotionalOrbs = () => {
         const arr = particlesRef.current.geometry.attributes.position.array;
         for (let i = 0; i < arr.length; i += 3) {
           arr[i + 1] += Math.sin(time + arr[i]) * (0.0008 + intensity * 0.0008);
-          if (arr[i + 1] > 5)  arr[i + 1] = -5;
-          if (arr[i + 1] < -5) arr[i + 1] =  5;
+          if (arr[i + 1] > 5) arr[i + 1] = -5;
+          if (arr[i + 1] < -5) arr[i + 1] = 5;
         }
         particlesRef.current.geometry.attributes.position.needsUpdate = true;
       }
 
       // Kamera-Position - Kombination aus Drag-Rotation und Maus-Parallaxe
       const cam = cameraRef.current;
-      
+
       if (isDraggingRef.current) {
         // Wenn gedraggt wird: Sphärische Koordinaten für Orb-Rotation
         const theta = cameraRotationRef.current.theta;
@@ -856,7 +864,7 @@ const EmotionalOrbs = () => {
         cam.position.y += (mouseRef.current.y * 0.5 - cam.position.y) * 0.05;
         cam.position.z = cameraDistanceRef.current + floatZ;
       }
-      
+
       cam.lookAt(scene.position);
 
       renderer.render(scene, camera);
@@ -875,7 +883,7 @@ const EmotionalOrbs = () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseDrag);
-      
+
       if (canvasRef.current) {
         canvasRef.current.removeEventListener('mousedown', handleMouseDown);
         canvasRef.current.removeEventListener('touchstart', handleTouchStart);
@@ -883,7 +891,7 @@ const EmotionalOrbs = () => {
         canvasRef.current.removeEventListener('touchend', handleTouchEnd);
         canvasRef.current.removeEventListener('wheel', handleWheel);
       }
-      
+
       cancelAnimationFrame(animationId);
       orbGeo.dispose();
       orbMat.dispose();
@@ -902,15 +910,15 @@ const EmotionalOrbs = () => {
     fractalRef.current.material.uniforms.color.value.lerp(eff.color, 0.2);
 
     const u = fractalRef.current.material.uniforms;
-    u.uNoiseAmp.value   = eff.noiseAmp;
-    u.uRidge.value      = eff.ridge;
-    u.uWarp.value       = eff.warp;
-    u.uWarpScale.value  = eff.warpScale;
-    u.uTwistAmp.value   = eff.twistAmp;
-    u.uTwistFreq.value  = eff.twistFreq;
-    u.uPulseFreq.value  = eff.pulseFreq;
-    u.uWaveAmp.value    = eff.waveAmp;
-    u.uWaveFreq.value   = eff.waveFreq;
+    u.uNoiseAmp.value = eff.noiseAmp;
+    u.uRidge.value = eff.ridge;
+    u.uWarp.value = eff.warp;
+    u.uWarpScale.value = eff.warpScale;
+    u.uTwistAmp.value = eff.twistAmp;
+    u.uTwistFreq.value = eff.twistFreq;
+    u.uPulseFreq.value = eff.pulseFreq;
+    u.uWaveAmp.value = eff.waveAmp;
+    u.uWaveFreq.value = eff.waveFreq;
     u.uNoiseScale.value = eff.shaderNoiseScale;
     u.uNoiseSpeed.value = eff.shaderNoiseSpeed;
 
@@ -926,12 +934,12 @@ const EmotionalOrbs = () => {
       const colors = new Float32Array(count * 3);
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
-        positions[i3]     = (Math.random() - 0.5) * 10;
+        positions[i3] = (Math.random() - 0.5) * 10;
         positions[i3 + 1] = (Math.random() - 0.5) * 10;
         positions[i3 + 2] = (Math.random() - 0.5) * 10;
         const pickA = Math.random() < 0.5;
         const c = pickA ? particleColors[currentState].a : particleColors[currentState].b;
-        colors[i3]     = c.r;
+        colors[i3] = c.r;
         colors[i3 + 1] = c.g;
         colors[i3 + 2] = c.b;
       }
@@ -1171,7 +1179,7 @@ const EmotionalOrbs = () => {
                   <svg className="w-6 h-6 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                <h2 className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  <h2 className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
                     The Vision
                   </h2>
                 </div>
@@ -1310,7 +1318,7 @@ const EmotionalOrbs = () => {
                 </div>
                 <div className="mt-6 pt-6 border-t border-white/10">
                   <p className="text-xs opacity-60 text-center" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
-                    © 2025 Clarissa Bilke 
+                    © 2025 Clarissa Bilke
                   </p>
                 </div>
               </section>
@@ -1342,10 +1350,10 @@ const EmotionalOrbs = () => {
               textShadow: '0 0 20px rgba(255,255,255,0.3)',
               transform:
                 currentState === 'chaos' ? 'skew(-2deg)' :
-                currentState === 'tension' ? 'scaleY(1.2)' : 'none',
+                  currentState === 'tension' ? 'scaleY(1.2)' : 'none',
               letterSpacing:
                 currentState === 'clarity' ? '0.3em' :
-                currentState === 'calm' ? '0.1em' : '0.05em',
+                  currentState === 'calm' ? '0.1em' : '0.05em',
             }}
           >
             {emotionStates[currentState].title}
@@ -1373,7 +1381,7 @@ const EmotionalOrbs = () => {
                 return (
                   <button
                     key={state}
-                    onClick={() => setCurrentState(state)}
+                    onClick={() => handleEmotionChange(state)}
                     className="group relative rounded-xl md:rounded-2xl transition-all duration-300 hover:scale-105 px-5 py-2.5 md:px-6 md:py-3"
                     style={{
                       background: isActive ? `rgba(${cStr}, 0.16)` : 'rgba(255,255,255,0.05)',
@@ -1421,7 +1429,7 @@ const EmotionalOrbs = () => {
                   className="w-5 h-5 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all hover:scale-110"
                 >
                   <svg className="w-3 h-3 text-white opacity-70" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                   </svg>
                 </button>
               </div>
@@ -1446,11 +1454,11 @@ const EmotionalOrbs = () => {
             >
               {soundEnabled ? (
                 <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
                 </svg>
               ) : (
                 <svg className="w-5 h-5 text-white opacity-70" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                  <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
                 </svg>
               )}
             </button>
@@ -1465,11 +1473,11 @@ const EmotionalOrbs = () => {
       >
         {soundEnabled ? (
           <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
           </svg>
         ) : (
           <svg className="w-6 h-6 text-white opacity-70" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
           </svg>
         )}
       </button>
