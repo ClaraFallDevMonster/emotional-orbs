@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/emotional-orbs/static/css/main.09756a8d.css",
-    "main.js": "/emotional-orbs/static/js/main.fcb8837c.js",
+    "main.css": "/emotional-orbs/static/css/main.3b02f82e.css",
+    "main.js": "/emotional-orbs/static/js/main.fa8e0cde.js",
     "static/js/453.a30ae78c.chunk.js": "/emotional-orbs/static/js/453.a30ae78c.chunk.js",
     "static/media/000_BaseCleanDrone.mp3": "/emotional-orbs/static/media/000_BaseCleanDrone.4fe94146fcac46e99268.mp3",
     "static/media/011_CalmMain.mp3": "/emotional-orbs/static/media/011_CalmMain.1956de211046aa439c68.mp3",
     "static/media/012_CalmIntensity.mp3": "/emotional-orbs/static/media/012_CalmIntensity.31dd0dbfe8e80e05484d.mp3",
     "index.html": "/emotional-orbs/index.html",
-    "main.09756a8d.css.map": "/emotional-orbs/static/css/main.09756a8d.css.map",
-    "main.fcb8837c.js.map": "/emotional-orbs/static/js/main.fcb8837c.js.map",
+    "main.3b02f82e.css.map": "/emotional-orbs/static/css/main.3b02f82e.css.map",
+    "main.fa8e0cde.js.map": "/emotional-orbs/static/js/main.fa8e0cde.js.map",
     "453.a30ae78c.chunk.js.map": "/emotional-orbs/static/js/453.a30ae78c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.09756a8d.css",
-    "static/js/main.fcb8837c.js"
+    "static/css/main.3b02f82e.css",
+    "static/js/main.fa8e0cde.js"
   ]
 }
