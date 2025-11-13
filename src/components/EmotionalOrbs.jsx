@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 
-const EmotionalFractals = () => {
+const EmotionalOrbs = () => {
   const canvasRef = useRef(null);
   const [currentState, setCurrentState] = useState('calm');
   const [intensity, setIntensity] = useState(0.5);
@@ -702,11 +702,11 @@ const EmotionalFractals = () => {
       isDraggingRef.current = false;
     };
 
-    // Mouse Wheel für Zoom - stark eingeschränkt
+   
     const handleWheel = (e) => {
       e.preventDefault();
-      cameraDistanceRef.current += e.deltaY * 0.002; // Viel feiner
-      cameraDistanceRef.current = Math.max(4.5, Math.min(6, cameraDistanceRef.current)); // Enger Bereich
+      cameraDistanceRef.current += e.deltaY * 0.002;
+      cameraDistanceRef.current = Math.max(4.5, Math.min(6, cameraDistanceRef.current)); 
     };
 
     // Event Listeners hinzufügen
@@ -1094,19 +1094,19 @@ const EmotionalFractals = () => {
 
             <div className="space-y-4 mb-6">
               <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  <span className="font-semibold">Click, hold and move your cursor</span> to shift the camera perspective. Use your <span className="font-semibold">mouse wheel</span> to zoom in and out.
+                <p className="text-sm leading-relaxed opacity-90 text-center" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  <span className="font-semibold">Click, hold and move your cursor</span> to shift the camera perspective. Use your <span className="font-semibold">mouse wheel</span> to zoom in or out.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  The <span className="font-semibold">intensity slider</span> maps each emotion's min→max ranges for speed, complexity, scale, particles, noise and sound characteristics.
+                <p className="text-sm leading-relaxed opacity-90 text-center" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                  The <span className="font-semibold">intensity slider</span> maps each emotion&apos;s min→max ranges for speed, complexity, scale, particles, noise and sound characteristics.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <p className="text-sm leading-relaxed opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                <p className="text-sm leading-relaxed opacity-90 text-center" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
                   <span className="font-semibold">Select emotions</span> on the left to experience different states, each with unique visual and sonic properties.
                 </p>
               </div>
@@ -1171,12 +1171,12 @@ const EmotionalFractals = () => {
                   <svg className="w-6 h-6 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  <h2 className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
+                <h2 className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
                     The Vision
                   </h2>
                 </div>
                 <p className="text-base leading-relaxed opacity-90 mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  Emotional Fractals is an experimental web experience that translates internal emotional states into dynamic, generative 3D art. This project explores the intersection of somatic design, data visualization, and interactive media — questioning how digital interfaces can reflect and respond to human emotion in real-time.
+                  Emotional Orbs is an experimental web experience that translates internal emotional states into dynamic, generative 3D art. This project explores the intersection of somatic design, data visualization, and interactive media — questioning how digital interfaces can reflect and respond to human emotion in real-time.
                 </p>
               </section>
 
@@ -1199,7 +1199,7 @@ const EmotionalFractals = () => {
                   <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
                     <span className="text-blue-300 flex-shrink-0">●</span>
                     <span className="text-sm opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                      Generative 3D fractals that deform and pulse in real-time
+                      Generative 3D orbs that deform and pulse in real-time
                     </span>
                   </li>
                   <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
@@ -1259,7 +1259,7 @@ const EmotionalFractals = () => {
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed opacity-80" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  The intensity slider acts as a unified control parameter, simultaneously affecting fractal deformation amplitude, animation speed, particle density and glow, and audio track intensity (volume, filter cutoff, reverb).
+                  The intensity slider acts as a unified control parameter, simultaneously affecting orb deformation amplitude, animation speed, particle density and glow, and audio track intensity (volume, filter cutoff, reverb).
                 </p>
               </section>
 
@@ -1273,7 +1273,7 @@ const EmotionalFractals = () => {
                   </h2>
                 </div>
                 <p className="text-base leading-relaxed opacity-90 mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  In an era of flat, grid-based interfaces, Emotional Fractals asks: <span className="italic font-semibold">What if our digital tools could breathe with us?</span> This project is both a UX experiment and a creative statement — demonstrating how generative systems can create deeply personal, responsive experiences.
+                  In an era of flat, grid-based interfaces, Emotional Orbs asks: <span className="italic font-semibold">What if our digital tools could breathe with us?</span> This project is both a UX experiment and a creative statement — demonstrating how generative systems can create deeply personal, responsive experiences.
                 </p>
                 <p className="text-sm leading-relaxed opacity-80 mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
                   For brands and studios interested in pushing the boundaries of digital storytelling, experiential design, or music visualization, this project showcases:
@@ -1533,4 +1533,4 @@ const EmotionalFractals = () => {
   );
 };
 
-export default EmotionalFractals;
+export default EmotionalOrbs;
