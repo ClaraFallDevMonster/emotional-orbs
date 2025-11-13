@@ -59,14 +59,14 @@ const EmotionalOrbs = () => {
   const toRGB = (c) => `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
   const toRGBA = (c, a = 1) => `rgba(${toRGB(c)}, ${a})`;
 
-const audioFiles = {
-  drone: drone000,
+  const audioFiles = {
+    drone: drone000,
 
-  calm: {
-    base: calmBase,
-    layer: calmLayer,
-  },
-};
+    calm: {
+      base: calmBase,
+      layer: calmLayer,
+    },
+  };
 
 
   const DRONE_VOLUME = 0.35;     // konstante Lautstärke
@@ -109,7 +109,7 @@ const audioFiles = {
   const startDroneIfNeeded = () => {
     const drone = getOrCreateAudio('drone', audioFiles.drone);
     if (drone && drone.paused) {
-      drone.play().catch(() => {});
+      drone.play().catch(() => { });
       fadeToVolume(drone, DRONE_VOLUME, 600);
     }
   };
@@ -132,12 +132,12 @@ const audioFiles = {
     const layerAudio = getOrCreateAudio(`${currentState}_layer`, conf.layer);
 
     if (baseAudio) {
-      if (baseAudio.paused) baseAudio.play().catch(() => {});
+      if (baseAudio.paused) baseAudio.play().catch(() => { });
       fadeToVolume(baseAudio, BASE_VOLUME, 500);
     }
 
     if (layerAudio) {
-      if (layerAudio.paused) layerAudio.play().catch(() => {});
+      if (layerAudio.paused) layerAudio.play().catch(() => { });
       const targetLayerVol = LAYER_MAX_VOLUME * intensity;
       fadeToVolume(layerAudio, targetLayerVol, 500);
     }
@@ -1013,7 +1013,7 @@ const audioFiles = {
                 Immersive Experience
               </h2>
               <p className="text-sm opacity-70" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
-                This experience is best enjoyed with sound, headphones and full screen mode.
+                This experience is best enjoyed with sound and headphones.
               </p>
             </div>
 
@@ -1213,7 +1213,7 @@ const audioFiles = {
                   <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
                     <span className="text-purple-300 flex-shrink-0">●</span>
                     <span className="text-sm opacity-90" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                      Emotion-specific soundscapes where sound and visuals are tightly coupled
+                      Emotion-specific soundtracks composed for this project, tightly interwoven with the visual experience
                     </span>
                   </li>
                   <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
@@ -1238,7 +1238,7 @@ const audioFiles = {
                   </h2>
                 </div>
                 <p className="text-base leading-relaxed opacity-90 mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  Built with Three.js, WebGL shaders, and Web Audio API, the experience runs entirely in the browser. Each emotion has unique algorithmic behaviors:
+                  Built with React, Three.js, and WebGL shaders, the experience runs entirely in the browser. Each emotion has unique algorithmic behaviors:
                 </p>
                 <div className="grid md:grid-cols-2 gap-3 mb-4">
                   <div className="p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-300/20">
@@ -1267,7 +1267,7 @@ const audioFiles = {
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed opacity-80" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'white' }}>
-                  The intensity slider acts as a unified control parameter, simultaneously affecting orb deformation amplitude, animation speed, particle density and glow, and audio track intensity (volume, filter cutoff, reverb).
+                  The intensity slider acts as a unified control parameter, simultaneously affecting orb deformation amplitude, animation speed, particle density and glow, as well as the volume balance between the layered soundtracks.
                 </p>
               </section>
 
@@ -1306,22 +1306,41 @@ const audioFiles = {
               </section>
 
               <section className="bg-gradient-to-br from-white/5 to-white/10 border border-white/20 rounded-xl p-6">
-                <div className="grid md:grid-cols-2 gap-6 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
+                <div
+                  className="grid md:grid-cols-2 gap-6 text-sm"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}
+                >
                   <div>
                     <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Role</p>
-                    <p className="opacity-90">Concept, UX/UI Design, WebGL Development, Visual Design</p>
+                    <p className="opacity-90">
+                      Concept, UX/UI Design, WebGL Development, Visual Design
+                    </p>
                   </div>
+
                   <div>
                     <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Tech Stack</p>
-                    <p className="opacity-90">React, Three.js, GLSL Shaders, Web Audio API</p>
+                    <p className="opacity-90">
+                      React, Three.js, GLSL Shaders, layered audio stems
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Collaboration</p>
+                    <p className="opacity-90">
+                      Original soundtracks by Diego Caetano Guerra
+                    </p>
                   </div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-white/10">
-                  <p className="text-xs opacity-60 text-center" style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}>
+                  <p
+                    className="text-xs opacity-60 text-center"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", color: 'white' }}
+                  >
                     © 2025 Clarissa Bilke
                   </p>
                 </div>
               </section>
+
             </div>
 
             <button
