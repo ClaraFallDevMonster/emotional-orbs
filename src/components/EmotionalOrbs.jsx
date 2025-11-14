@@ -271,11 +271,11 @@ chaos: {
   speed: { min: 0.0022, max: 0.0029 },
   complexity: { min: 3.0, max: 4.0 },
   scale: { min: 0.8, max: 1.2 },
-  particles: { min: 1500, max: 1900 },
+  particles: { min: 1200, max: 1600 },
   noiseScale: { min: 2.4, max: 3.0 },
-  noiseSpeed: { min: 1.6, max: 1.9 },
+  noiseSpeed: { min: 1.4, max: 1.7 },
   sharpness: { min: 1.2, max: 1.6 },
-  waviness: { min: 4.5, max: 6.0 },
+  waviness: { min: 4.0, max: 5.5 },
   shaderIntensityMul: { min: 0.04, max: 0.07 },
   cpuDeformBase: { min: 0.04, max: 0.08 },
   cpuDeformVar: { min: 0.04, max: 0.06 },
@@ -283,7 +283,7 @@ chaos: {
   ridge: { min: 0, max: 0 },
   warp: { min: 0.7, max: 1.0 },
   warpScale: { min: 1.1, max: 1.3 },
-  twistAmp: { min: 1.2, max: 1.5 },
+  twistAmp: { min: 0.8, max: 1.1 },
   twistFreq: { min: 1.8, max: 2.0 },
   pulseFreq: { min: 2.2, max: 2.8 },
   waveAmp: { min: 0.06, max: 0.12 },
@@ -291,7 +291,6 @@ chaos: {
   shaderNoiseScale: { min: 0.8, max: 1.1 },
   shaderNoiseSpeed: { min: 1.6, max: 2.0 },
 }
-
   };
 
   const getEffective = (stateKey, t) => {
