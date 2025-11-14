@@ -228,11 +228,11 @@ tension: {
   scale: { min: 1.0, max: 1.3 },
   particles: { min: 900, max: 1500 },
   noiseScale: { min: 1.2, max: 1.6 },
-  noiseSpeed: { min: 0.9, max: 1.6 },
+  noiseSpeed: { min: 1.0, max: 1.6 },
   sharpness: { min: 0.08, max: 0.12 },
   waviness: { min: 3.2, max: 3.8 },
   shaderIntensityMul: { min: 0.25, max: 0.29 },
-  cpuDeformBase: { min: 0.03, max: 0.11 },
+  cpuDeformBase: { min: 0.05, max: 0.11 },
   cpuDeformVar: { min: 0.05, max: 0.07 },
   noiseAmp: { min: 0.03, max: 0.05 },
   ridge: { min: 0.00, max: 0.0 },
@@ -999,7 +999,7 @@ tension: {
           <div
             className="relative max-w-md w-full rounded-3xl p-8 backdrop-blur-xl"
             style={{
-              background: 'rgba(15, 15, 25, 0.85)',
+              background: 'rgba(15, 15, 25, 0.90)',
               border: '2px solid transparent',
               backgroundClip: 'padding-box',
               animation: 'borderGlow 3s ease-in-out infinite',
@@ -1072,7 +1072,7 @@ tension: {
           <div
             className="relative max-w-md w-full rounded-3xl p-8 backdrop-blur-xl max-h-[90vh] overflow-y-auto"
             style={{
-              background: 'rgba(15, 15, 25, 0.85)',
+              background: 'rgba(15, 15, 25, 0.90)',
               border: '2px solid transparent',
               backgroundClip: 'padding-box',
               animation: 'borderGlow 3s ease-in-out infinite',
