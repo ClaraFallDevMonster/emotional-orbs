@@ -5,7 +5,9 @@ import drone000 from "../assets/audio/000_BaseCleanDrone.mp3";
 import calmBase from "../assets/audio/011_CalmMain.mp3";
 import calmLayer from "../assets/audio/012_CalmIntensity.mp3";
 
-
+// TENSION
+import tensionBase from "../assets/audio/021_TensionMain.mp3";
+import tensionLayer from "../assets/audio/022_TensionIntensity.mp3";
 
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
@@ -48,7 +50,7 @@ const EmotionalOrbs = () => {
   const PARTICLE_OPACITY_VAR = 0.22;
 
   const particleColors = {
-    calm: { a: new THREE.Color('#9fdcff'), b: new THREE.Color('#c4ffe7') },
+    calm: { a: new THREE.Color('#9fdcff'), b: new THREE.Color('#cde0d8') },
     tension: { a: new THREE.Color('#ff6868'), b: new THREE.Color('#fff0e2') },
     clarity: { a: new THREE.Color('#ffffff'), b: new THREE.Color('#cbd7ff') },
     chaos: { a: new THREE.Color('#ff6fff'), b: new THREE.Color('#ffdcfa') }
@@ -65,6 +67,11 @@ const EmotionalOrbs = () => {
     calm: {
       base: calmBase,
       layer: calmLayer,
+    },
+
+    tension: {
+      base: tensionBase,
+      layer: tensionLayer,
     },
   };
 
@@ -198,7 +205,7 @@ const EmotionalOrbs = () => {
   const emotionStates = {
     calm: {
       color: new THREE.Color(0.60, 0.80, 0.95), title: 'Calm', subtitle: 'breathe in serenity',
-      speed: { min: 0.0004, max: 0.0010 }, complexity: { min: 3, max: 4 }, scale: { min: 0.9, max: 1.3 },
+      speed: { min: 0.0004, max: 0.0010 }, complexity: { min: 3, max: 4 }, scale: { min: 0.8, max: 1.3 },
       particles: { min: 600, max: 1000 }, noiseScale: { min: 0.8, max: 1.0 }, noiseSpeed: { min: 0.2, max: 0.4 },
       sharpness: { min: 0.1, max: 0.2 }, waviness: { min: 2.0, max: 2.5 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.055 }, cpuDeformVar: { min: 0.04, max: 0.0 },
@@ -217,28 +224,29 @@ const EmotionalOrbs = () => {
 tension: {
   color: new THREE.Color(0.95, 0.30, 0.40), title: 'Tension', subtitle: 'energy compressed',
   speed: { min: 0.0011, max: 0.0019 },
-  complexity: { min: 3.4, max: 4.4 },
+  complexity: { min: 3.6, max: 4.4 },
   scale: { min: 1.0, max: 1.3 },
   particles: { min: 900, max: 1500 },
-  noiseScale: { min: 1.3, max: 1.7 },
-  noiseSpeed: { min: 0.8, max: 1.2 },
+  noiseScale: { min: 1.2, max: 1.6 },
+  noiseSpeed: { min: 0.8, max: 1.6 },
   sharpness: { min: 0.08, max: 0.12 },
-  waviness: { min: 3.8, max: 4.2 },
-  shaderIntensityMul: { min: 0.27, max: 0.32 },
-  cpuDeformBase: { min: 0.010, max: 0.13 },
-  cpuDeformVar: { min: 0.07, max: 0.09 },
-  noiseAmp: { min: 0.09, max: 0.16 },
+  waviness: { min: 3.2, max: 3.8 },
+  shaderIntensityMul: { min: 0.25, max: 0.29 },
+  cpuDeformBase: { min: 0.03, max: 0.11 },
+  cpuDeformVar: { min: 0.05, max: 0.07 },
+  noiseAmp: { min: 0.03, max: 0.04 },
   ridge: { min: 0.00, max: 0.0 },
   warp: { min: 0.45, max: 0.85 },
   warpScale: { min: 1.2, max: 1.5 },
   twistAmp: { min: 0.04, max: 0.07 },
   twistFreq: { min: 1.6, max: 2.2 },
   pulseFreq: { min: 1.6, max: 2.6 },
-  waveAmp: { min: 0.18, max: 0.32 },
+  waveAmp: { min: 0.14, max: 0.26 },
   waveFreq: { min: 1.2, max: 2.0 },
   shaderNoiseScale: { min: 0.3, max: 0.7 },
   shaderNoiseSpeed: { min: 0.7, max: 1.2 },
 },
+
 
     clarity: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
