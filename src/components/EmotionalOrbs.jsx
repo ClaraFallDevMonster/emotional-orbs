@@ -248,8 +248,8 @@ const EmotionalOrbs = () => {
     },
     clarity: {
       color: new THREE.Color(0.95, 0.95, 1.00), title: 'Clarity', subtitle: 'crystallized thought',
-      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 2.5, max: 3.6 }, scale: { min: 0.55, max: 0.6 },
-      particles: { min: 500, max: 900 }, noiseScale: { min: 4.8, max: 7.0 }, noiseSpeed: { min: 0.9, max: 1. },
+      speed: { min: 0.0006, max: 0.0010 }, complexity: { min: 3.0, max: 4.0 }, scale: { min: 0.55, max: 0.6 },
+      particles: { min: 500, max: 900 }, noiseScale: { min: 4.8, max: 6.8 }, noiseSpeed: { min: 0.9, max: 1. },
       sharpness: { min: 3.0, max: 5.0 }, waviness: { min: 2.0, max: 5.0 }, shaderIntensityMul: { min: 0.25, max: 0.35 },
       cpuDeformBase: { min: 0.05, max: 0.2 }, cpuDeformVar: { min: 0.1, max: 0.1 },
       noiseAmp: { min: 0.00, max: 0.00 },
