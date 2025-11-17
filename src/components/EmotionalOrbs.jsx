@@ -13,6 +13,10 @@ import tensionLayer from "../assets/audio/TensionIntensity.mp3";
 import clarityBase from "../assets/audio/ClarityMain.mp3";
 import clarityLayer from "../assets/audio/ClarityIntensity.mp3";
 
+// CHAOS
+import chaosBase from "../assets/audio/ChaosMain.mp3";
+import chaosLayer from "../assets/audio/ChaosIntensity.mp3";
+
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 
@@ -83,6 +87,10 @@ const EmotionalOrbs = () => {
       base: clarityBase,
       layer: clarityLayer,
     },
+      chaos: {
+    base: chaosBase,
+    layer: chaosLayer,
+  },
   };
 
   const DRONE_VOLUME = 0.35;
