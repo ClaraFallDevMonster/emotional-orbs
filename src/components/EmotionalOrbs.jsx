@@ -1,13 +1,17 @@
 // BASE DRONE
-import drone000 from "../assets/audio/000_BaseCleanDrone.mp3";
+import drone000 from "../assets/audio/BaseCleanDrone.mp3";
 
 // CALM
-import calmBase from "../assets/audio/011_CalmMain.mp3";
-import calmLayer from "../assets/audio/012_CalmIntensity.mp3";
+import calmBase from "../assets/audio/CalmMain.mp3";
+import calmLayer from "../assets/audio/CalmIntensity.mp3";
 
 // TENSION
-import tensionBase from "../assets/audio/021_TensionMain.mp3";
-import tensionLayer from "../assets/audio/022_TensionIntensity.mp3";
+import tensionBase from "../assets/audio/TensionMain.mp3";
+import tensionLayer from "../assets/audio/TensionIntensity.mp3";
+
+// CLARITY
+import clarityBase from "../assets/audio/ClarityMain.mp3";
+import clarityLayer from "../assets/audio/ClarityIntensity.mp3";
 
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
@@ -74,6 +78,10 @@ const EmotionalOrbs = () => {
     tension: {
       base: tensionBase,
       layer: tensionLayer,
+    },
+    clarity: {
+      base: clarityBase,
+      layer: clarityLayer,
     },
   };
 
