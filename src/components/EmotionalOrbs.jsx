@@ -1294,20 +1294,20 @@ const EmotionalOrbs = () => {
 
 
       {showAboutModal && (
-  <div
-    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-    onClick={() => setShowAboutModal(false)}
-  >
-    <div
-      className="relative max-w-3xl w-full rounded-3xl p-8 md:p-12 backdrop-blur-xl max-h-[90vh] overflow-y-auto"
-      style={{
-        background: "rgba(15, 15, 25, 0.92)",
-        border: "2px solid transparent",
-        backgroundClip: "padding-box",
-      }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <style>{`
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={() => setShowAboutModal(false)}
+        >
+          <div
+            className="relative max-w-3xl w-full rounded-3xl p-8 md:p-12 backdrop-blur-xl max-h-[90vh] overflow-y-auto"
+            style={{
+              background: "rgba(15, 15, 25, 0.92)",
+              border: "2px solid transparent",
+              backgroundClip: "padding-box",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <style>{`
         @keyframes borderGlow {
           0%, 100% {
             box-shadow:
@@ -1428,359 +1428,358 @@ const EmotionalOrbs = () => {
         }
       `}</style>
 
-      <button
-        onClick={() => setShowAboutModal(false)}
-        className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all z-10"
-      >
-        <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+            <button
+              onClick={() => setShowAboutModal(false)}
+              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all z-10"
+            >
+              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
 
-      <div className="text-center mb-10">
-        <div className="headline-orb-wrapper mb-3">
-          <h1
-            className="text-5xl font-light"
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              color: "rgb(153, 204, 242)",
-              letterSpacing: "0.02em",
-              textShadow: `
+            <div className="text-center mb-10">
+              <div className="headline-orb-wrapper mb-3">
+                <h1
+                  className="text-5xl font-light"
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    color: "rgb(153, 204, 242)",
+                    letterSpacing: "0.02em",
+                    textShadow: `
                 0 0 12px rgba(153, 204, 242, 0.6),
                 0 0 24px rgba(153, 204, 242, 0.45),
                 0 0 36px rgba(153, 204, 242, 0.3)
               `,
-            }}
-          >
-            Emotional Orbs
-          </h1>
+                  }}
+                >
+                  Emotional Orbs
+                </h1>
 
-          <span className="headline-particle p1"></span>
-          <span className="headline-particle p2"></span>
-          <span className="headline-particle p3"></span>
-        </div>
-
-        <p
-          className="text-lg opacity-70"
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            color: "white",
-            letterSpacing: "0.1em",
-          }}
-        >
-          AN INTERACTIVE AUDIO-VISUAL EXPERIENCE
-        </p>
-      </div>
-
-      <div className="space-y-8">
-        {/* Vision */}
-        <section>
-          <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-
-            <h2
-              className="text-2xl font-light"
-              style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
-            >
-              The Vision
-            </h2>
-          </div>
-
-          <p
-            className="text-base leading-relaxed opacity-90 mb-4"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-          >
-            Emotional Orbs is an experimental web experience that translates internal emotional states into dynamic,
-            generative 3D art. This project explores the intersection of somatic design, data visualization, and
-            interactive media — questioning how digital interfaces can reflect and respond to human emotion in real-time.
-          </p>
-        </section>
-
-        {/* Concept & Intention */}
-        <section>
-          <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-              />
-            </svg>
-
-            <h2
-              className="text-2xl font-light"
-              style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
-            >
-              Concept & Intention
-            </h2>
-          </div>
-
-          <p
-            className="text-base leading-relaxed opacity-90 mb-4"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-          >
-            We experience emotions not as static labels, but as fluid, shifting states of being. This project challenges
-            the traditional notion of UI as purely functional, instead treating it as a meta-interface — where visual
-            patterns themselves become the language of interaction.
-          </p>
-
-          <p
-            className="text-sm leading-relaxed opacity-80 mb-3"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-          >
-            Each emotional state (Calm, Tension, Clarity, Chaos) is represented through:
-          </p>
-
-          <ul className="space-y-2 mb-4">
-            <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
-              <span className="text-blue-300 flex-shrink-0">●</span>
-              <span
-                className="text-sm opacity-90"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-              >
-                Generative 3D orbs that deform and pulse in real-time
-              </span>
-            </li>
-
-            <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
-              <span className="text-purple-300 flex-shrink-0">●</span>
-              <span
-                className="text-sm opacity-90"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-              >
-                Emotion-specific soundtracks composed for this project, tightly interwoven with the visual experience
-              </span>
-            </li>
-
-            <li className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
-              <span className="text-pink-300 flex-shrink-0">●</span>
-              <span
-                className="text-sm opacity-90"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-              >
-                Intensity control that lets users modulate both visual complexity and sonic depth
-              </span>
-            </li>
-          </ul>
-        </section>
-
-        {/* Technical Approach */}
-        <section>
-          <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-            </svg>
-
-            <h2
-              className="text-2xl font-light"
-              style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
-            >
-              Technical Approach
-            </h2>
-          </div>
-
-          <p
-            className="text-base leading-relaxed opacity-90 mb-4"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-          >
-            Built with React, Three.js and WebGL shaders, the experience runs entirely in the browser. Each
-            emotion has unique algorithmic behaviors:
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-3 mb-4">
-            <div className="p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-300/20">
-              <h3
-                className="font-semibold mb-2 text-blue-200"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Calm
-              </h3>
+                <span className="headline-particle p1"></span>
+                <span className="headline-particle p2"></span>
+                <span className="headline-particle p3"></span>
+              </div>
 
               <p
-                className="text-sm opacity-80"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                className="text-lg opacity-70"
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  color: "white",
+                  letterSpacing: "0.1em",
+                }}
               >
-                Gentle, flowing deformations with subtle warping and smooth wave patterns
+                AN INTERACTIVE AUDIO-VISUAL EXPERIENCE
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-300/20">
-              <h3
-                className="font-semibold mb-2 text-red-200"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Tension
-              </h3>
+            <div className="space-y-8">
+              {/* Vision */}
+              <section>
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-6 h-6 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
 
-              <p
-                className="text-sm opacity-80"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-              >
-                Compressed energy with aggressive warping, rapid pulses, and sharp wave frequencies
-              </p>
-            </div>
+                  <h2
+                    className="text-2xl font-light"
+                    style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
+                  >
+                    The Vision
+                  </h2>
+                </div>
 
-            <div className="p-4 rounded-lg bg-gradient-to-br from-white/10 to-gray-200/10 border border-white/20">
-              <h3
-                className="font-semibold mb-2 text-white"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Clarity
-              </h3>
-
-              <p
-                className="text-sm opacity-80"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-              >
-                Crystalline ridged surfaces with high-frequency detail and pristine geometric precision
-              </p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-300/20">
-              <h3
-                className="font-semibold mb-2 text-pink-200"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Chaos
-              </h3>
-
-              <p
-                className="text-sm opacity-80"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-              >
-                Turbulent multi-layered noise with extreme warping, twisting forces, and unpredictable movement
-              </p>
-            </div>
-          </div>
-
-          <p
-            className="text-sm leading-relaxed opacity-80"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-          >
-            The intensity slider acts as a unified control parameter, simultaneously affecting orb deformation amplitude,
-            animation speed, particle density and glow, and audio track intensity.
-          </p>
-        </section>
-
-        {/* Why This Matters */}
-        <section className="border-t border-white/10 pt-8">
-          <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-pink-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-              />
-            </svg>
-
-            <h2
-              className="text-2xl font-light"
-              style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
-            >
-              Why This Matters
-            </h2>
-          </div>
-
-          <p
-            className="text-base leading-relaxed opacity-90 mb-4"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-          >
-            In an era of flat, grid-based interfaces, Emotional Orbs asks:
-            <span className="italic font-semibold"> What if our digital tools could breathe with us? </span>
-            This project is both a UX experiment and a creative statement — demonstrating how generative systems can
-            create deeply personal, responsive experiences.
-          </p>
-
-          <p
-            className="text-sm leading-relaxed opacity-80 mb-3"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-          >
-            For brands and studios interested in pushing the boundaries of digital storytelling, experiential design, or
-            music visualization, this project highlights:
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-2 mb-6">
-            {[
-              "Advanced WebGL shader programming",
-              "Real-time generative art systems",
-              "Audio-reactive design",
-              "Emotional design principles applied to interaction",
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-white/5">
-                <svg className="w-4 h-4 text-green-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-
-                <span
-                  className="text-sm opacity-90"
+                <p
+                  className="text-base leading-relaxed opacity-90 mb-4"
                   style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
                 >
-                  {item}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+                  Emotional Orbs is an experimental web experience that translates internal emotional states into dynamic,
+                  generative 3D art. This project explores the intersection of somatic design, data visualization, and
+                  interactive media — questioning how digital interfaces can reflect and respond to human emotion in real-time.
+                </p>
+              </section>
 
-        {/* Role / Stack / Collaboration */}
-        <section className="bg-gradient-to-br from-white/5 to-white/10 border border-white/20 rounded-xl p-6">
-          <div
-            className="grid md:grid-cols-3 gap-6 text-sm"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
-          >
-            <div>
-              <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Role</p>
-              <p className="opacity-90">Concept, UX/UI Design, WebGL Development, Visual Design</p>
+              {/* Concept & Intention */}
+              <section>
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-6 h-6 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                    />
+                  </svg>
+
+                  <h2
+                    className="text-2xl font-light"
+                    style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
+                  >
+                    Concept & Intention
+                  </h2>
+                </div>
+
+                <p
+                  className="text-base leading-relaxed opacity-90 mb-4"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                >
+                  We experience emotions not as static labels, but as fluid, shifting states of being. This project challenges
+                  the traditional notion of UI as purely functional, instead treating it as a meta-interface — where visual
+                  patterns themselves become the language of interaction.
+                </p>
+
+                <p
+                  className="text-sm leading-relaxed opacity-80 mb-3"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                >
+                  Each emotional state (Calm, Tension, Clarity, Chaos) is represented through:
+                </p>
+
+                <ul className="space-y-2 mb-4">
+                  <li className="flex gap-3 p-3 rounded-lg bg-white/5 border border-white/10" style={{ alignItems: 'baseline' }}>
+                    <span className="text-blue-300 text-base leading-none flex-shrink-0">●</span>
+                    <span
+                      className="text-sm opacity-90 leading-tight"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                    >
+                      Generative 3D orbs that deform and pulse in real-time
+                    </span>
+                  </li>
+                  <li className="flex gap-3 p-3 rounded-lg bg-white/5 border border-white/10" style={{ alignItems: 'baseline' }}>
+                    <span className="text-purple-300 text-base leading-none flex-shrink-0">●</span>
+                    <span
+                      className="text-sm opacity-90 leading-tight"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                    >
+                      Emotion-specific soundtracks composed for this project, tightly interwoven
+                      with the visual experience
+                    </span>
+                  </li>
+                  <li className="flex gap-3 p-3 rounded-lg bg-white/5 border border-white/10" style={{ alignItems: 'baseline' }}>
+                    <span className="text-pink-300 text-base leading-none flex-shrink-0">●</span>
+                    <span
+                      className="text-sm opacity-90 leading-tight"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                    >
+                      Intensity control that lets users modulate both visual complexity and sonic depth
+                    </span>
+                  </li>
+                </ul>
+              </section>
+
+              {/* Technical Approach */}
+              <section>
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-6 h-6 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+
+                  <h2
+                    className="text-2xl font-light"
+                    style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
+                  >
+                    Technical Approach
+                  </h2>
+                </div>
+
+                <p
+                  className="text-base leading-relaxed opacity-90 mb-4"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                >
+                  Built with React, Three.js and WebGL shaders, the experience runs entirely in the browser. Each
+                  emotion has unique algorithmic behaviors:
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-3 mb-4">
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-300/20">
+                    <h3
+                      className="font-semibold mb-2 text-blue-200"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Calm
+                    </h3>
+
+                    <p
+                      className="text-sm opacity-80"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                    >
+                      Gentle, flowing deformations with subtle warping and smooth wave patterns
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-300/20">
+                    <h3
+                      className="font-semibold mb-2 text-red-200"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Tension
+                    </h3>
+
+                    <p
+                      className="text-sm opacity-80"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                    >
+                      Compressed energy with aggressive warping, rapid pulses, and sharp wave frequencies
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-white/10 to-gray-200/10 border border-white/20">
+                    <h3
+                      className="font-semibold mb-2 text-white"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Clarity
+                    </h3>
+
+                    <p
+                      className="text-sm opacity-80"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                    >
+                      Crystalline ridged surfaces with high-frequency detail and pristine geometric precision
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-300/20">
+                    <h3
+                      className="font-semibold mb-2 text-pink-200"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Chaos
+                    </h3>
+
+                    <p
+                      className="text-sm opacity-80"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                    >
+                      Turbulent multi-layered noise with extreme warping, twisting forces, and unpredictable movement
+                    </p>
+                  </div>
+                </div>
+
+                <p
+                  className="text-sm leading-relaxed opacity-80"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                >
+                  The intensity slider acts as a unified control parameter, simultaneously affecting orb deformation amplitude,
+                  animation speed, particle density and glow, and audio track intensity.
+                </p>
+              </section>
+
+              {/* Why This Matters */}
+              <section className="border-t border-white/10 pt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <svg className="w-6 h-6 text-pink-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                    />
+                  </svg>
+
+                  <h2
+                    className="text-2xl font-light"
+                    style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
+                  >
+                    Why This Matters
+                  </h2>
+                </div>
+
+                <p
+                  className="text-base leading-relaxed opacity-90 mb-4"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                >
+                  In an era of flat, grid-based interfaces, Emotional Orbs asks:
+                  <span className="italic font-semibold"> What if our digital tools could breathe with us? </span>
+                  This project is both a UX experiment and a creative statement — demonstrating how generative systems can
+                  create deeply personal, responsive experiences.
+                </p>
+
+                <p
+                  className="text-sm leading-relaxed opacity-80 mb-3"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                >
+                  For brands and studios interested in pushing the boundaries of digital storytelling, experiential design, or
+                  music visualization, this project highlights:
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-2 mb-6">
+                  {[
+                    "Advanced WebGL shader programming",
+                    "Real-time generative art systems",
+                    "Audio-reactive design",
+                    "Emotional design principles applied to interaction",
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-white/5">
+                      <svg className="w-4 h-4 text-green-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+
+                      <span
+                        className="text-sm opacity-90"
+                        style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                      >
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Role / Stack / Collaboration */}
+              <section className="bg-gradient-to-br from-white/5 to-white/10 border border-white/20 rounded-xl p-6">
+                <div
+                  className="grid md:grid-cols-3 gap-6 text-sm"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                >
+                  <div>
+                    <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Role</p>
+                    <p className="opacity-90">Concept, UX/UI Design, WebGL Development, Visual Design</p>
+                  </div>
+
+                  <div>
+                    <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Tech Stack</p>
+                    <p className="opacity-90">React, Three.js, GLSL Shaders, layered audio stems</p>
+                  </div>
+
+                  <div>
+                    <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Collaboration</p>
+                    <p className="opacity-90">Original soundtracks by Diego Caetano Guerra</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <p
+                    className="text-xs opacity-60 text-center"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+                  >
+                    © 2025 Clarissa Bilke
+                  </p>
+                </div>
+              </section>
             </div>
 
-            <div>
-              <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Tech Stack</p>
-              <p className="opacity-90">React, Three.js, GLSL Shaders, layered audio stems</p>
-            </div>
-
-            <div>
-              <p className="opacity-60 mb-1 uppercase tracking-wider text-xs">Collaboration</p>
-              <p className="opacity-90">Original soundtracks by Diego Caetano Guerra</p>
-            </div>
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-white/10">
-            <p
-              className="text-xs opacity-60 text-center"
-              style={{ fontFamily: "'Space Grotesk', sans-serif", color: "white" }}
+            {/* Glowing Close Button */}
+            <button
+              onClick={() => setShowAboutModal(false)}
+              className="mt-8 w-full py-3 px-6 rounded-xl font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:scale-105"
+              style={{
+                background: "linear-gradient(135deg, rgba(153, 204, 242, 0.25), rgba(153, 204, 242, 0.4))",
+                border: "2px solid rgba(153, 204, 242, 0.7)",
+                color: "white",
+                fontFamily: "'Space Grotesk', sans-serif",
+                boxShadow: "0 0 24px rgba(153, 204, 242, 0.6), 0 0 4px rgba(255,255,255,0.8)",
+                animation: "pulseGlowBlue 3s ease-in-out infinite",
+              }}
             >
-              © 2025 Clarissa Bilke
-            </p>
+              Close
+            </button>
           </div>
-        </section>
-      </div>
-
-      {/* Glowing Close Button */}
-      <button
-        onClick={() => setShowAboutModal(false)}
-        className="mt-8 w-full py-3 px-6 rounded-xl font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:scale-105"
-        style={{
-          background: "linear-gradient(135deg, rgba(153, 204, 242, 0.25), rgba(153, 204, 242, 0.4))",
-          border: "2px solid rgba(153, 204, 242, 0.7)",
-          color: "white",
-          fontFamily: "'Space Grotesk', sans-serif",
-          boxShadow: "0 0 24px rgba(153, 204, 242, 0.6), 0 0 4px rgba(255,255,255,0.8)",
-          animation: "pulseGlowBlue 3s ease-in-out infinite",
-        }}
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
 
 
@@ -1869,11 +1868,12 @@ const EmotionalOrbs = () => {
                 >
                   Intensity
                 </span>
+
                 <button
                   onClick={() => setShowInfoModal(true)}
-                  className="w-5 h-5 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all hover:scale-110"
+                  className="w-7 h-7 flex items-center justify-center rounded-full transition-all hover:scale-110 focus:outline-none focus-visible:outline-none"
                 >
-                  <svg className="w-3 h-3 text-white opacity-70" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-white opacity-80" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                   </svg>
                 </button>
