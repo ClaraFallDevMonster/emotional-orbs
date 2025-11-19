@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/emotional-orbs/static/css/main.58fa2ab1.css",
-    "main.js": "/emotional-orbs/static/js/main.01ffc984.js",
+    "main.css": "/emotional-orbs/static/css/main.e87386bb.css",
+    "main.js": "/emotional-orbs/static/js/main.9d1abb87.js",
     "static/js/453.a30ae78c.chunk.js": "/emotional-orbs/static/js/453.a30ae78c.chunk.js",
     "static/media/ChaosIntensity.mp3": "/emotional-orbs/static/media/ChaosIntensity.ea7db4d53af0f192c5d3.mp3",
     "static/media/ChaosMain.mp3": "/emotional-orbs/static/media/ChaosMain.0d79f26762481cd04975.mp3",
@@ -13,12 +13,12 @@
     "static/media/CalmIntensity.mp3": "/emotional-orbs/static/media/CalmIntensity.31dd0dbfe8e80e05484d.mp3",
     "static/media/CalmMain.mp3": "/emotional-orbs/static/media/CalmMain.1956de211046aa439c68.mp3",
     "index.html": "/emotional-orbs/index.html",
-    "main.58fa2ab1.css.map": "/emotional-orbs/static/css/main.58fa2ab1.css.map",
-    "main.01ffc984.js.map": "/emotional-orbs/static/js/main.01ffc984.js.map",
+    "main.e87386bb.css.map": "/emotional-orbs/static/css/main.e87386bb.css.map",
+    "main.9d1abb87.js.map": "/emotional-orbs/static/js/main.9d1abb87.js.map",
     "453.a30ae78c.chunk.js.map": "/emotional-orbs/static/js/453.a30ae78c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.58fa2ab1.css",
-    "static/js/main.01ffc984.js"
+    "static/css/main.e87386bb.css",
+    "static/js/main.9d1abb87.js"
   ]
 }
