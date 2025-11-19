@@ -2236,10 +2236,10 @@ const EmotionalOrbs = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-[calc(100vw-2.5rem)] md:max-w-96 px-4 md:px-0 pointer-events-auto">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-[calc(100vw-2.5rem)] md:max-w-96 px-4 md:px-0 pointer-events-auto">
           <div className="backdrop-blur-sm bg-white/5 rounded-full px-4 py-2.5 border border-white/10 flex items-center gap-3">
             <div className="flex-1">
-              <div className="text-center mb-1 flex items-center justify-center">
+              <div className="text-center mb-0.1 flex items-center justify-center">
                 <span
                   className="text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-70"
                   style={{
