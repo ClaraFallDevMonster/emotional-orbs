@@ -97,25 +97,44 @@ const EmotionalOrbs = () => {
       const audio = new Audio(src);
       audio.loop = true;
       audio.volume = 0;
+      audio.preload = 'auto';
       audioElementsRef.current[key] = audio;
     }
     return audioElementsRef.current[key];
+  };
+
+  const playAudioSafely = async (audio) => {
+    if (!audio) return;
+    
+    try {
+      if (audio.readyState < 2) {
+        await new Promise((resolve, reject) => {
+          audio.addEventListener('canplay', resolve, { once: true });
+          audio.addEventListener('error', reject, { once: true });
+          audio.load();
+        });
+      }
+      
+      await audio.play();
+    } catch (err) {
+      console.warn(`Audio play failed:`, err.message);
+    }
   };
 
   const fadeToVolume = (audio, target, durationMs = 400) => {
     if (!audio) return;
     const steps = 20;
     const stepTime = durationMs / steps;
-    const delta = (target - audio.volume) / steps;
+    const startVolume = audio.volume;
+    const delta = (target - startVolume) / steps;
     let currentStep = 0;
     const id = setInterval(() => {
       currentStep += 1;
-      const next = audio.volume + delta;
-      audio.volume = clamp(next, 0, 1);
+      audio.volume = Math.max(0, Math.min(1, startVolume + (delta * currentStep)));
       if (currentStep >= steps) {
         clearInterval(id);
-        audio.volume = clamp(target, 0, 1);
-        if (audio.volume === 0) {
+        audio.volume = Math.max(0, Math.min(1, target));
+        if (audio.volume === 0 && !audio.paused) {
           audio.pause();
           audio.currentTime = 0;
         }
@@ -123,15 +142,15 @@ const EmotionalOrbs = () => {
     }, stepTime);
   };
 
-  const startDroneIfNeeded = () => {
+  const startDroneIfNeeded = async () => {
     const drone = getOrCreateAudio("drone", audioFiles.drone);
     if (drone && drone.paused) {
-      drone.play().catch(() => { });
+      await playAudioSafely(drone);
       fadeToVolume(drone, DRONE_VOLUME, 600);
     }
   };
 
-  const updateEmotionTracks = () => {
+  const updateEmotionTracks = async () => {
     const emotions = ["calm", "tension", "clarity", "chaos"];
 
     emotions.forEach((emotion) => {
@@ -148,20 +167,20 @@ const EmotionalOrbs = () => {
     const layerAudio = getOrCreateAudio(`${currentState}_layer`, conf.layer);
 
     if (baseAudio) {
-      if (baseAudio.paused) baseAudio.play().catch(() => { });
+      await playAudioSafely(baseAudio);
       fadeToVolume(baseAudio, BASE_VOLUME, 1000);
     }
 
     if (layerAudio) {
-      if (layerAudio.paused) layerAudio.play().catch(() => { });
+      await playAudioSafely(layerAudio);
       const targetLayerVol = LAYER_MAX_VOLUME * intensity;
       fadeToVolume(layerAudio, targetLayerVol, 1000);
     }
   };
 
-  const startSound = () => {
-    startDroneIfNeeded();
-    updateEmotionTracks();
+  const startSound = async () => {
+    await startDroneIfNeeded();
+    await updateEmotionTracks();
   };
 
   const stopSound = () => {
@@ -170,12 +189,12 @@ const EmotionalOrbs = () => {
     });
   };
 
-  const toggleSound = () => {
+  const toggleSound = async () => {
     if (soundEnabled) {
       stopSound();
       setSoundEnabled(false);
     } else {
-      startSound();
+      await startSound();
       setSoundEnabled(true);
     }
   };
@@ -187,6 +206,22 @@ const EmotionalOrbs = () => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const preloadAudio = () => {
+      getOrCreateAudio("drone", audioFiles.drone);
+      
+      Object.keys(emotionStates).forEach((emotion) => {
+        const conf = audioFiles[emotion];
+        if (conf) {
+          getOrCreateAudio(`${emotion}_base`, conf.base);
+          getOrCreateAudio(`${emotion}_layer`, conf.layer);
+        }
+      });
+    };
+    
+    preloadAudio();
   }, []);
 
   useEffect(() => {
@@ -1256,10 +1291,10 @@ const EmotionalOrbs = () => {
 
             <div className="flex gap-3">
               <button
-                onClick={() => {
+                onClick={async () => {
                   setShowModal(false);
                   setSoundEnabled(true);
-                  startSound();
+                  await startSound();
                 }}
                 className="flex-1 py-3 px-6 rounded-xl font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:scale-105"
                 style={{
@@ -2026,7 +2061,7 @@ const EmotionalOrbs = () => {
                       >
                         <path
                           fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 001-1.414 0z"
                           clipRule="evenodd"
                         />
                       </svg>
@@ -2323,7 +2358,6 @@ const EmotionalOrbs = () => {
           )}
         </button>
       </div>
-
 
       <style>{`
         .ef-range {
