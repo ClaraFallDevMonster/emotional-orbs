@@ -48,16 +48,14 @@ Advanced WebGL shader programming
 Real-time generative art systems
 Audio-reactive design
 Emotional design principles applied to interaction
-Role
 
+# Role
 Concept, UX/UI Design, WebGL Development, Visual Design
 
-Tech Stack
-
+#Tech Stack
 React, Three.js, GLSL Shaders, layered audio stems
 
-Collaboration
-
+#Collaboration
 Original soundtracks by Diego Caetano Guerra
 
 © 2025 Clarissa Bilke
