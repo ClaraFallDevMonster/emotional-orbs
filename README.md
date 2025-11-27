@@ -9,12 +9,12 @@ We experience emotions not as static labels, but as fluid, shifting states of be
 
 Each emotional state (Calm, Tension, Clarity, Chaos) is represented through:
 
-●
-Generative 3D orbs that deform and pulse in real-time
-●
-Emotion-specific soundtracks composed for this project, tightly interwoven with the visual experience
-●
-Intensity control that lets users modulate both visual complexity and sonic depth
+● Generative 3D orbs that deform and pulse in real-time
+
+● Emotion-specific soundtracks composed for this project, tightly interwoven with the visual experience
+
+● Intensity control that lets users modulate both visual complexity and sonic depth
+
 Technical Approach
 Built with React, Three.js and WebGL shaders, the experience runs entirely in the browser. Each emotion has unique algorithmic behaviors:
 
