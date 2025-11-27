@@ -1,67 +1,59 @@
-# Getting Started with Create React App
+# Emotional Orbs
+# AN INTERACTIVE AUDIO-VISUAL EXPERIENCE
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The Vision
+Emotional Orbs is an experimental web experience that translates internal emotional states into dynamic, generative 3D art. This project explores the intersection of somatic design, data visualization, and interactive media — questioning how digital interfaces can reflect and respond to human emotion in real-time.
 
-## Available Scripts
+Concept & Intention
+We experience emotions not as static labels, but as fluid, shifting states of being. This project challenges the traditional notion of UI as purely functional, instead treating it as a meta-interface — where visual patterns themselves become the language of interaction.
 
-In the project directory, you can run:
+Each emotional state (Calm, Tension, Clarity, Chaos) is represented through:
 
-### `npm start`
+●
+Generative 3D orbs that deform and pulse in real-time
+●
+Emotion-specific soundtracks composed for this project, tightly interwoven with the visual experience
+●
+Intensity control that lets users modulate both visual complexity and sonic depth
+Technical Approach
+Built with React, Three.js and WebGL shaders, the experience runs entirely in the browser. Each emotion has unique algorithmic behaviors:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Calm
+Gentle, flowing deformations with subtle warping and smooth wave patterns
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Tension
+Compressed energy with aggressive warping, rapid pulses, and sharp wave frequencies
 
-### `npm test`
+Clarity
+Crystalline ridged surfaces with high-frequency detail and pristine geometric precision
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Chaos
+Turbulent multi-layered noise with extreme warping, twisting forces, and unpredictable movement
 
-### `npm run build`
+The intensity slider acts as a unified control parameter, simultaneously affecting orb deformation amplitude, animation speed, particle density and glow, and audio track intensity.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Why This Matters
+In an era of flat, grid-based interfaces, Emotional Orbs asks: What if our digital tools could breathe with us? This project is both a UX experiment and a creative statement — demonstrating how generative systems can create deeply personal, responsive experiences.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+For brands and studios interested in pushing the boundaries of digital storytelling, experiential design, or music visualization, this project highlights:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Advanced WebGL shader programming
+Real-time generative art systems
+Audio-reactive design
+Emotional design principles applied to interaction
+Role
 
-### `npm run eject`
+Concept, UX/UI Design, WebGL Development, Visual Design
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Tech Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+React, Three.js, GLSL Shaders, layered audio stems
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Collaboration
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Original soundtracks by Diego Caetano Guerra
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
+© 2025 Clarissa Bilke
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
