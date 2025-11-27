@@ -52,16 +52,10 @@ Emotional design principles applied to interaction
 # Role
 Concept, UX/UI Design, WebGL Development, Visual Design
 
-#Tech Stack
+# Tech Stack
 React, Three.js, GLSL Shaders, layered audio stems
 
-#Collaboration
+# Collaboration
 Original soundtracks by Diego Caetano Guerra
 
 © 2025 Clarissa Bilke
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
